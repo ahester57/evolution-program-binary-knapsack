@@ -49,40 +49,89 @@ Defaults shown.
 
 ----
 
-## Details of Evolution Program
+## Representation
 
-### Representation
-
-* Chromosomes (input vector $\vec{s}$) made up of bit-string values, e.g. $\langle10010101101101100110\rangle$.
+* Chromosomes (input vector $\vec{x}$) made up of bit-string values, e.g. $\langle10010101101101100110\rangle$.
 * The $i^{th}$ item is selected if and only if $x_i = 1$.
 
-### Selection Mechanisms
+----
 
-* Proportional selection, i.e. probability of advancement equal to fitness values over sum of all fitness values.
+## Evolution Program Parameters
 
-### Crossover Methods
+Defaults shown.
 
-* Single-point crossover, i.e. from two parents, choose a cut-point and swap sides of each parent to create two children.
+* Population size, $N = 300$
+* Crossover probability, $p_c = 0.65$
+* Mutation probability, $p_m = 0.05$
+* Maximum generations, $t_{max} = 50$
 
-### Mutation Methods
+----
 
-* Gene-wise mutation, i.e. each gbitene ($s_i$) has equal but indenpendent chance ($p_m$) to mutate a small amount.
+## Selection Mechanisms
 
-### Termination Conditions
+### Proportional Selection
+
+An individual's probability of advancement equal to fitness score over sum of all fitness scores.
+
+$$P(x_i) = f(x_i) / \sum_j^N{f(x_j)}$$
+
+### Truncation Selection
+
+The top $\tau\%$ are selected for advancement. The next generation
+is sampled uniformly random with replacement from the top $\tau\%$.
+
+#### Additional Parameters for Truncation Selection
+
+* Top tau, $\tau = 0.4$
+
+### Deterministic Tournament Selection
+
+Pick two individuals from the current population uniformly randomly with replacement.  
+Advance the chromosome $\vec{x}$ with the better fitness score.  
+Repeat $N$ times.
+
+### Stochastic Tournament Selection
+
+Same as deterministic tournament selection, except the worse chromosome $\vec{x}$ advances
+with a typically small random chance.
+
+#### Additional Parameters for Stochastic Tournament Selection
+
+* Probability, $prob = 0.9$
+
+### Linear Ranking Selection
+
+Each chromosome $\vec{x}$ is ranked from best to worst based on fitness score.  
+An individual's probability of advancement is proportional to its rank.
+
+#### Additional Parameters for Linear Ranking Selection
+
+* Expected # of copies of best $\vec{x}$, $max = 1.2$
+
+----
+
+## Crossover Methods
+
+### Single-point Crossover
+
+From two parents, choose a cut-point and swap sides of each parent to create two children.
+
+----
+
+## Mutation Methods
+
+### Gene-wise Mutation
+
+Each bit ($x_i$) of chromosome $\vec{x}$  has equal but independent chance ($p_m$) to mutate a small amount.
+
+----
+
+## Termination Conditions
 
 Simulate until one of the following has been met:
 
 * Simulation reaches $t_{max}$ generations.
 * Population fully converges.
-
-### Evolution Program Parameters
-
-Defaults shown.
-
-* Population Size, $N = 300$
-* Crossover probability, $p_c = 0.65$
-* Mutation probability, $p_m = 0.05$
-* Maximum generations, $t_{max} = 50$
 
 ----
 
