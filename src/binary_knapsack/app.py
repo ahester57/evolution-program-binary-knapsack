@@ -2,7 +2,7 @@
 
 import asyncio
 
-from ea_bitwise.menu import GAMenu
+from binary_knapsack.menu import GAMenu
 
 
 class App:

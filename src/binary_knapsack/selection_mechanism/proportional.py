@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from ea_bitwise.selection_mechanism.mechanism import SelectionMechanism
+from binary_knapsack.selection_mechanism.mechanism import SelectionMechanism
 
 
 class Proportional(SelectionMechanism):

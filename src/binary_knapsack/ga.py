@@ -9,11 +9,11 @@ import time
 from collections import deque
 from typing import Callable
 
-import ea_bitwise.test_functions.simple as simple
-from ea_bitwise.chromosome import Chromosome
-from ea_bitwise.population import Population
-from ea_bitwise.selection_mechanism.mechanism import SelectionMechanism
-from ea_bitwise.selection_mechanism.proportional import Proportional
+import binary_knapsack.test_functions.simple as simple
+from binary_knapsack.chromosome import Chromosome
+from binary_knapsack.population import Population
+from binary_knapsack.selection_mechanism.mechanism import SelectionMechanism
+from binary_knapsack.selection_mechanism.proportional import Proportional
 
 
 class GA:

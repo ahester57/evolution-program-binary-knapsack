@@ -6,12 +6,12 @@ import numpy as np
 import random
 import time
 
-from ea_bitwise.ga import GA
-from ea_bitwise.selection_mechanism.mechanism import SelectionMechanism
-from ea_bitwise.selection_mechanism.proportional import Proportional
-from ea_bitwise.selection_mechanism.ranking import LinearRanking
-from ea_bitwise.selection_mechanism.tournament import DeterministicTournament, StochasticTournament
-from ea_bitwise.selection_mechanism.truncation import Truncation
+from binary_knapsack.ga import GA
+from binary_knapsack.selection_mechanism.mechanism import SelectionMechanism
+from binary_knapsack.selection_mechanism.proportional import Proportional
+from binary_knapsack.selection_mechanism.ranking import LinearRanking
+from binary_knapsack.selection_mechanism.tournament import DeterministicTournament, StochasticTournament
+from binary_knapsack.selection_mechanism.truncation import Truncation
 
 
 class GAMenu(object):

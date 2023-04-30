@@ -4,7 +4,7 @@ import numpy as np
 
 from collections import deque
 
-from ea_bitwise.selection_mechanism.mechanism import SelectionMechanism
+from binary_knapsack.selection_mechanism.mechanism import SelectionMechanism
 
 
 class DeterministicTournament(SelectionMechanism):
