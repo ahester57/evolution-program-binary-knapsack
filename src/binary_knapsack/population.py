@@ -5,7 +5,7 @@ import numpy as np
 from collections import deque
 from typing import Callable
 
-from ea_bitwise.chromosome import Chromosome
+from binary_knapsack.chromosome import Chromosome
 
 
 class Population:

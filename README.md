@@ -28,24 +28,33 @@ $$\sum_i^n{(x_i \times W_i)} \leq C.$$
 
 The difficulty of the knapsack problem can be contributed to by the level of correlation of the Profits $P_i$ and Weights $W_i$.
 
-This project uses a weakly correlated test data set to provide some challenge while still remaining solvable with penalty techniques.
+This project uses a weakly correlated test data set to provide some challenge while still remaining solvable using penalty methods.
+
+For each $i=1..n$
+
+$$W_i = rand.float(1, v),$$
+
+$$P_i = W_i + rand.float(-r, r)$$
+
+If $P_i \leq 0$ 
 
 ### Test Data Parameters
 
 Defaults shown.
 
 * Number of items to choose from, $n = 20$
-* Correlation variance, $r = 5$
 * Upper bound for weight, $v = 10$
+* Profit correlation variance, $r = 5$
+* Capacity, $C = 20$
 
 ----
 
-## Details of Genetic Algorithm
+## Details of Evolution Program
 
 ### Representation
 
 * Chromosomes (input vector $\vec{s}$) made up of bit-string values, e.g. $\langle10010101101101100110\rangle$.
-* The $i^{th}$ item is selected $\iff x_i = 1$.
+* The $i^{th}$ item is selected if and only if $x_i = 1$.
 
 ### Selection Mechanisms
 
@@ -64,16 +73,19 @@ Defaults shown.
 Simulate until one of the following has been met:
 
 * Simulation reaches $t_{max}$ generations.
+* Population fully converges.
 
-
-### Parameters
+### Evolution Program Parameters
 
 Defaults shown.
 
-* Dimensions, $d = 3$
-* Population Size, $N = 30$
+* Population Size, $N = 300$
 * Crossover probability, $p_c = 0.65$
 * Mutation probability, $p_m = 0.05$
 * Maximum generations, $t_{max} = 50$
 
 ----
+
+## Local Installation
+
+From the project root, run `pip install -e src/`.
