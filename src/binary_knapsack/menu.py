@@ -12,6 +12,8 @@ from binary_knapsack.selection_mechanism.proportional import Proportional
 from binary_knapsack.selection_mechanism.ranking import LinearRanking
 from binary_knapsack.selection_mechanism.tournament import DeterministicTournament, StochasticTournament
 from binary_knapsack.selection_mechanism.truncation import Truncation
+from binary_knapsack.test_problem.knapsack import BinaryKnapsack
+from binary_knapsack.test_problem.problem import TestProblem
 
 
 class GAMenu(object):
@@ -20,7 +22,42 @@ class GAMenu(object):
         """Concept loosely based on: https://chunkofcode.net/how-to-implement-a-dynamic-command-line-menu-in-python/"""
         pass
 
+    def problem_to_solve_menu(self) -> TestProblem:
+        """Menu for test problems.
+
+        Returns:
+            tuple[TestProblem, dict]: (The type of problem to solve, Its parameters)
+        """
+        print('''
+=================================
+Problems To Solve
+=================================
+    1 - BinaryKnapsack
+=================================
+''')
+        ans = -1
+        while ans not in range(1, 2):
+            ans = self.prompt_int('Which problem?', 1)
+        Problem_To_Solve : TestProblem = [
+            None,
+            BinaryKnapsack
+        ][ans]
+        problem_parameters = {}
+        for k, v in Problem_To_Solve.parameters().items():
+            dtype = type(v[1])
+            assert(dtype in (float, int))
+            if dtype is float:
+                problem_parameters.update({k: self.prompt_float(v[0], v[1])})
+            elif dtype is int:
+                problem_parameters.update({k: self.prompt_int(v[0], v[1])})
+        return Problem_To_Solve, problem_parameters
+
     def selection_mechanism_menu(self) -> SelectionMechanism:
+        """Menu for test problems.
+
+        Returns:
+            tuple[SelectionMechanism, dict]: (The type of problem to solve, Its parameters)
+        """
         print('''
 =================================
 Selection Mechanisms
@@ -35,7 +72,7 @@ Selection Mechanisms
         ans = -1
         while ans not in range(1, 6):
             ans = self.prompt_int('Which mechanism?', None)
-        return [
+        Select_Mechanism : SelectionMechanism = [
             None,
             Proportional,
             Truncation,
@@ -43,6 +80,15 @@ Selection Mechanisms
             StochasticTournament,
             LinearRanking
         ][ans]
+        selection_parameters = {}
+        for k, v in Select_Mechanism.parameters().items():
+            dtype = type(v[1])
+            assert(dtype in (float, int))
+            if dtype is float:
+                selection_parameters.update({k: self.prompt_float(v[0], v[1])})
+            elif dtype is int:
+                selection_parameters.update({k: self.prompt_int(v[0], v[1])})
+        return Select_Mechanism, selection_parameters
 
     def input_display(self, name:str, default=None) -> str:
         """Generate the string to be displayed in an prompt.
@@ -128,23 +174,23 @@ Selection Mechanisms
         while True:
             try:
                 random.seed(time.time())
-                Select_Mechanism = self.selection_mechanism_menu()
-                selection_parameters = {}
-                for k, v in Select_Mechanism.parameters().items():
-                    selection_parameters.update({k: self.prompt_float(v[0], v[1])})
+                Problem_To_Solve, \
+                    problem_parameters = self.problem_to_solve_menu()
+                Select_Mechanism, \
+                    selection_parameters = self.selection_mechanism_menu()
                 options = {
-                    'dims': self.prompt_int('Dimensions', 3),
-                    'domain_lower': self.prompt_float('Domain Lower Bound', -4.0),
-                    'domain_upper': self.prompt_float('Domain Upper Bound', 7.0),
-                    'pop_size': self.prompt_int('Population Size', 20),
+                    'dims': self.prompt_int('Dimensions', 20),
+                    'pop_size': self.prompt_int('Population Size', 30),
                     'p_c': self.prompt_float('Prob. of Crossover', 0.65),
                     'p_m': self.prompt_float('Prob. of Mutation', 0.05),
-                    't_max': self.prompt_int('Max Generations', 30),
-                    'maximize': self.prompt_bool('Maximize', False),
+                    't_max': self.prompt_int('Max Generations', 300),
+                    'maximize': self.prompt_bool('Maximize', True),
                     'Select_Mechanism': Select_Mechanism,
-                    'selection_parameters': selection_parameters
+                    'selection_parameters': selection_parameters,
+                    'Problem_To_Solve': Problem_To_Solve,
+                    'problem_parameters': problem_parameters
                 }
-                if self.prompt_bool('Single run?', False):
+                if self.prompt_bool('Single run?', True):
                     await GA(
                         **options,
                         rand_seed=self.prompt_int('Random Seed', random.randint(1, 123456789))
