@@ -14,6 +14,8 @@ from binary_knapsack.selection_mechanism.tournament import DeterministicTourname
 from binary_knapsack.selection_mechanism.truncation import Truncation
 from binary_knapsack.test_problem.knapsack import BinaryKnapsack
 from binary_knapsack.test_problem.problem import TestProblem
+from crossover_method.method import CrossoverMethod
+from crossover_method.single_point import SinglePoint
 
 
 class GAMenu(object):
@@ -53,10 +55,10 @@ Problems To Solve
         return Problem_To_Solve, problem_parameters
 
     def selection_mechanism_menu(self) -> SelectionMechanism:
-        """Menu for test problems.
+        """Menu for selection mechanisms.
 
         Returns:
-            tuple[SelectionMechanism, dict]: (The type of problem to solve, Its parameters)
+            tuple[SelectionMechanism, dict]: (The chosen selection mechanism, Its parameters)
         """
         print('''
 =================================
@@ -89,6 +91,36 @@ Selection Mechanisms
             elif dtype is int:
                 selection_parameters.update({k: self.prompt_int(v[0], v[1])})
         return Select_Mechanism, selection_parameters
+
+    def crossover_method_menu(self) -> CrossoverMethod:
+        """Menu for crossover methods.
+
+        Returns:
+            tuple[CrossoverMethod, dict]: (The chosen crossover method, Its parameters)
+        """
+        print('''
+=================================
+Problems To Solve
+=================================
+    1 - SinglePoint
+=================================
+''')
+        ans = -1
+        while ans not in range(1, 2):
+            ans = self.prompt_int('Which Crossover Method?', 1)
+        Crossover_Method : CrossoverMethod = [
+            None,
+            SinglePoint
+        ][ans]
+        crossover_parameters = {}
+        for k, v in Crossover_Method.parameters().items():
+            dtype = type(v[1])
+            assert(dtype in (float, int))
+            if dtype is float:
+                crossover_parameters.update({k: self.prompt_float(v[0], v[1])})
+            elif dtype is int:
+                crossover_parameters.update({k: self.prompt_int(v[0], v[1])})
+        return Crossover_Method, crossover_parameters
 
     def input_display(self, name:str, default=None) -> str:
         """Generate the string to be displayed in an prompt.
@@ -178,16 +210,19 @@ Selection Mechanisms
                     problem_parameters = self.problem_to_solve_menu()
                 Select_Mechanism, \
                     selection_parameters = self.selection_mechanism_menu()
+                Crossover_Method, \
+                    crossover_parameters = self.crossover_method_menu()
                 options = {
                     'pop_size': self.prompt_int('Population Size', 30),
-                    'p_c': self.prompt_float('Prob. of Crossover', 0.65),
-                    'p_m': self.prompt_float('Prob. of Mutation', 0.05),
+                    'p_m': self.prompt_float('Probability of Mutation', 0.05),
                     't_max': self.prompt_int('Max Generations', 300),
                     'maximize': self.prompt_bool('Maximize', True),
                     'Select_Mechanism': Select_Mechanism,
                     'selection_parameters': selection_parameters,
                     'Problem_To_Solve': Problem_To_Solve,
-                    'problem_parameters': problem_parameters
+                    'problem_parameters': problem_parameters,
+                    'Crossover_Method': Crossover_Method,
+                    'crossover_parameters': crossover_parameters
                 }
                 if self.prompt_bool('Single run?', True):
                     await GA(

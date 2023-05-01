@@ -29,6 +29,7 @@ class SelectionMechanism:
             maximize (bool, optional): (False)[minimize]; (True)[maximize]. Default True.
         """
         assert population_fitnesses is not None
+        assert type(random) is np.random.Generator
         self.random = random
         self.population_fitnesses = population_fitnesses
         self.sum_of_fitnesses = sum_of_fitnesses

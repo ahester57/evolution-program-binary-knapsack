@@ -30,7 +30,7 @@ class BinaryKnapsack(TestProblem):
             profit_correlation_factor (float): Constant used in generation of weakly correlated data sets.
             capacity (float): Capacity of the knapsack.
         """
-        super().__init__()
+        super().__init__(random)
         self.num_items = int(num_items)
         self.capacity = float(capacity)
         self.weights = random.uniform(1, max_item_weight, size=self.num_items)

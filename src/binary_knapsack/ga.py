@@ -14,6 +14,8 @@ from binary_knapsack.selection_mechanism.mechanism import SelectionMechanism
 from binary_knapsack.selection_mechanism.proportional import Proportional
 from binary_knapsack.test_problem.knapsack import BinaryKnapsack
 from binary_knapsack.test_problem.problem import TestProblem
+from crossover_method.method import CrossoverMethod
+from crossover_method.single_point import SinglePoint
 
 
 class GA:
@@ -21,24 +23,22 @@ class GA:
 
     Attributes:
         dims (int): Dimensions of chromosome vector. Represents the number of items to choose from.
-        capacity (float, optional): Capacity of the knapsack.
         pop_size (int): Population size. Defaults to 30.
-        p_c (float): Probability of crossover. In range [0, 1].
         p_m (float): Probability of mutation. In range [0, 1].
         t_max (int): Maximum iterations/generations.
         random (np.random.Generator): The random number generator.
         population (Population): Collection of current generation's individual chromosomes.
-        Problem_To_Solve (TestProblem): The selected type of problem to solve.
-        problem_parameters (dict): The selected test problem parameters.
-        problem_instance (Problem_To_Solve): The instance of the "fitness function" or "objective function."
-        maximize (bool): (False)[minimize]; (True)[maximize]. Default True.
-        Select_Mechanism (SelectionMechanism): The selected selection mechanism. Default Proportional.
+        problem_instance (TestProblem): The configured instance of the "objective function."
+        maximize (bool): (False)[minimize]; (True)[maximize].
+        Select_Mechanism (SelectionMechanism): The selected selection mechanism.
         selection_parameters (dict): The selected selection mechanism parameters.
+        Crossover_Method (CrossoverMethod): The selected crossover method.
+        crossover_parameters (dict): The selected crossover method parameters.
+        crossover_instance (CrossoverMethod): The configured instance of the chosen method.
     """
     def __init__(
         self,
         pop_size:int=300,
-        p_c:float=0.65,
         p_m:float=0.05,
         t_max:int=50,
         rand_seed:int=None,
@@ -46,24 +46,26 @@ class GA:
         problem_parameters:dict={'num_items': 20},
         maximize:bool=True,
         Select_Mechanism:SelectionMechanism=Proportional,
-        selection_parameters:dict={}
+        selection_parameters:dict={},
+        Crossover_Method:CrossoverMethod=SinglePoint,
+        crossover_parameters:dict={'p_c': 0.65}
     ) -> None:
         """Initialize the parameters for a genetic algorithm.
 
         Args:
             pop_size (int, optional): Population size. Defaults to 30.
-            p_c (float, optional): Probability of crossover. In range [0, 1]. Defaults to 0.65.
             p_m (float, optional): Probability of mutation. In range [0, 1]. Defaults to 0.05.
             t_max (int, optional): Maximum iterations/generations. Defaults to 50.
             rand_seed(int, optional): Seed for random number generator.
-            Problem_To_Solve (TestProblem): The "fitness function" or "objective function."
+            Problem_To_Solve (TestProblem): The type of "objective function." Defaults BinaryKnapsack.
             problem_parameters (dict, optional): The selected test problem parameters.
             maximize (bool, optional): (False)[minimize]; (True)[maximize]. Default True.
             Select_Mechanism (SelectionMechanism): The selected selection mechanism. Default Proportional.
             selection_parameters (dict, optional): The selected selection mechanism parameters.
+            Crossover_Method (CrossoverMethod): The selected crossover method. Default SinglePoint.
+            crossover_parameters (dict, optional): The selected crossover method parameters.
         """
         assert pop_size > 0 and pop_size % 2 == 0
-        assert p_c >= 0 and p_c <= 1
         assert p_m >= 0 and p_m <= 1
         assert t_max > 0
         assert maximize in (False, True)
@@ -72,23 +74,24 @@ class GA:
         assert self.dims > 0
         self._bitstring_length = None
         self.pop_size = int(pop_size)
-        self.p_c = float(p_c)
         self.p_m = float(p_m)
         self.t_max = int(t_max)
         self.t = 0
         self.test_data_set = None
         self.population = None
         self.best_of_run = None
-        self.Problem_To_Solve = Problem_To_Solve
-        self.problem_parameters = problem_parameters
         self.maximize = maximize
         self.Select_Mechanism = Select_Mechanism
         self.selection_parameters = selection_parameters
         self.random = None
         self.seed_random(rand_seed)
-        self.problem_instance : TestProblem = self.Problem_To_Solve(
+        self.problem_instance : TestProblem = Problem_To_Solve(
             self.random,
-            **self.problem_parameters
+            **problem_parameters
+        )
+        self.crossover_instance : CrossoverMethod = Crossover_Method(
+            self.random,
+            **crossover_parameters
         )
 
     async def simulate(self) -> Chromosome:
@@ -123,7 +126,7 @@ class GA:
             Population: The proposed next generation of the population.
         """
         return Population(self.bitwise_gene_mutation(
-                            self.bitwise_single_point_crossover(
+                            self.crossover_method(
                                 self.selection_mechanism())))
 
     def selection_mechanism(self) -> list[Chromosome]:
@@ -147,32 +150,16 @@ class GA:
             sys.exit(1)
         return [copy.deepcopy(self.population.members[i]) for i in mechanism.next_population()]
 
-    def bitwise_single_point_crossover(self, population:list[Chromosome]) -> list[Chromosome]:
-        """Perform single cut-point crossover on the population using self.p_c as probability of occurrence.
+    def crossover_method(self, population:list[Chromosome]) -> list[Chromosome]:
+        """Perform on the population using self.p_c as probability of occurrence.
 
         Args:
             population (list of Chromosome): The population to act upon.
 
         Returns:
-            list of Chromosome: A new population after a round of single cut-point crossover.
+            list of Chromosome: A new population after a round of crossover.
         """
-        # print('crossing')
-        next_gen = []
-        randomness = self.random.uniform(0, 1, size=int(self.pop_size/2))
-        for i in np.arange(0, self.pop_size, step=2):
-            p1 : Chromosome = population[i]
-            p2 : Chromosome = population[i+1]
-            if randomness[int(i/2)] < self.p_c:
-                # crossover, perform single-point crossover
-                cut_point = self.random.integers(1, self.dims)
-                p1_split = np.split(p1.bitstring, [cut_point])
-                p2_split = np.split(p2.bitstring, [cut_point])
-                # print('crossing')
-                p1.bitstring = np.concatenate((p1_split[0], p2_split[1]))
-                p2.bitstring = np.concatenate((p2_split[0], p1_split[1]))
-            next_gen.append(p1)
-            next_gen.append(p2)
-        return next_gen
+        return self.crossover_instance.crossover(population)
 
     def bitwise_gene_mutation(self, population:list[Chromosome]) -> list[Chromosome]:
         """Perform gene-wise mutation on the population using self.p_m as probability of occurrence.
