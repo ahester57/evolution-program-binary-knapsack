@@ -6,55 +6,44 @@ from typing import Callable
 
 
 class Chromosome:
-    """Depicts one individual in the population.
+    """Depicts one solution in the population. Adapted for the 0/1 Knapsack problem.
 
     Attributes:
         random (np.random.Generator): The random number generator.
-        allele_precisions (ndarray of uint8): Size equal to number of real values to represent. \
-                Each value is the # of bits used to represent the allele. Max sum = 256.
-        domain_lower (float, optional): Gene value lower bound. Defaults to -7.0.
-        domain_upper (float, optional): Gene value upper bound. Defaults to 4.0.
+        num_items (int): The number of items to choose from.
         bitstring (np.ndarray of uint8): The bitstring representation of the alleles.
         fitness_score (float): The fitness score
     """
 
-    def __init__(self, random:np.random.Generator, allele_precisions:np.ndarray[np.uint8], domain_lower:float, domain_upper:float) -> None:
+    def __init__(self, random:np.random.Generator, num_items:int) -> None:
         """Depicts one individual in the population.
 
         Args:
             random (np.random.Generator): The random number generator.
-            allele_precisions (ndarray of uint8): Size equal to number of real values to represent. \
-                Each value is the # of bits used to represent the allele. Max sum = 256.
-            domain_lower (float, optional): Gene value lower bound. Defaults to -7.0.
-            domain_upper (float, optional): Gene value upper bound. Defaults to 4.0.
+            num_items (int): The number of items to choose from.
         """
-        assert allele_precisions is not None and type(allele_precisions) is np.ndarray
-        self.L = np.sum(allele_precisions)
-        assert self.L <= 256
-        self.allele_precisions = allele_precisions
-        self.domain_lower = float(domain_lower)
-        self.domain_upper = float(domain_upper)
-        self.domain_diff = self.domain_upper - self.domain_lower
+        assert num_items > 0 and num_items <= 256
+        self.num_items = num_items
         self.fitness_score = None
-        self.real_vals = None
-        self.split_locations = np.cumsum(self.allele_precisions[:-1])
-        self.bit_converters = {bit_size: 2**np.arange(bit_size)[::-1] for bit_size in self.allele_precisions}
-        self.bitstring = random.integers(2, size=self.L, dtype=np.uint8)
+        self.fitness_cost = None
+        self.bitstring = random.integers(2, size=self.num_items, dtype=np.uint8)
 
-    def evaluate(self, fitness_function:Callable) -> None:
+    def evaluate(self, set_of_items:tuple[tuple[float]], fitness_function:Callable) -> None:
         """Perform an evaluation of this chromosome with given fitness function.
 
         Args:
+            set_of_items (tuple[tuple[float]])
             fitness_function (Callable): Function of \vec{x}. Returns (float).
 
         Returns:
             float: The fitness score.
         """
+        assert set_of_items is not None and len(set_of_items[0]) == 2
         assert fitness_function is not None and callable(fitness_function)
         if self.is_evaluated:
             # no need to re-evaluate if bitstring has not changed
             return
-        self.fitness_score = fitness_function(self.real_vals)
+        self.fitness_score = fitness_function(set_of_items, self.bitstring)
 
     @property
     def bitstring(self) -> np.ndarray[np.uint8]:
@@ -63,26 +52,27 @@ class Chromosome:
     @bitstring.setter
     def bitstring(self, value:np.ndarray[np.uint8]) -> None:
         """bitstring update trigger clears fitness score."""
-        assert value is not None and type(value) is np.ndarray and len(value) == self.L
+        assert value is not None and type(value) is np.ndarray and len(value) == self.num_items
         self.fitness_score = None
         self._bitstring = value
-        self.real_vals = [
-            self.domain_lower + (self.domain_diff * (bits.dot(self.bit_converters[bits.size]) / ((2**bits.size) - 1)))
-            for bits in np.split(value, self.split_locations)
-        ] # trim [:-1] from np.cumsum -- it always ends up empty due to bitstring's reliance on self.L
 
     @property
     def fitness_score(self) -> np.float64:
         return self._fitness_score
 
     @fitness_score.setter
-    def fitness_score(self, value:np.float64) -> None:
-        assert value is None or type(value) is np.float64
-        self._fitness_score = value
+    def fitness_score(self, value:tuple[float]) -> None:
+        assert value is None or type(value) is tuple
+        if value is None:
+            self._fitness_score = value
+            self.fitness_cost = value
+        else:
+            self._fitness_score = value[0]
+            self.fitness_cost = value[1]
 
     @property
     def is_evaluated(self) -> bool:
         return self.fitness_score is not None
 
     def __repr__(self) -> str:
-        return f'{self.fitness_score} :: {self.bitstring}\n=> {self.real_vals}'
+        return f'Score: {self.fitness_score} :: {self.bitstring}\n => costing {self.fitness_cost}'

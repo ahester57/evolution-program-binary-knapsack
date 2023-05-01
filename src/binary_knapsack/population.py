@@ -29,14 +29,15 @@ class Population:
         self._average_fitness = None
         self._sum_of_fitnesses = None
 
-    def evaluate(self, fitness_function:Callable) -> None:
+    def evaluate(self, test_data_set:tuple[tuple[float]], fitness_function:Callable) -> None:
         """Evaluate the population with the given fitness function.
 
         Args:
+            test_data_set (tuple[tuple[float]]): The test data set.
             fitness_function (Callable): The "fitness function" or "objective function."
         """
         assert fitness_function is not None and callable(fitness_function)
-        deque((c.evaluate(fitness_function) for c in self.members), maxlen=0) # execute the generator
+        deque((c.evaluate(test_data_set, fitness_function) for c in self.members), maxlen=0) # execute the generator
         self._is_evaluated = True
 
     @property

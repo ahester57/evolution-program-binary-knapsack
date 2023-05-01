@@ -9,7 +9,7 @@ import time
 from collections import deque
 from typing import Callable
 
-import binary_knapsack.test_functions.simple as simple
+import binary_knapsack.test_functions.binary_knapsack as binary_knapsack
 from binary_knapsack.chromosome import Chromosome
 from binary_knapsack.population import Population
 from binary_knapsack.selection_mechanism.mechanism import SelectionMechanism
@@ -21,15 +21,14 @@ class GA:
     A class for a genetic algorithm (GA).
 
     Attributes:
-        dims (int): Dimensions of chromosome vector. Defaults to 3.
-        allele_precisions (np.ndarray[np.uint8]): Size equal to number of real values to represent. \
-                Each value is the # of bits used to represent the allele. Max sum = 256. Defaults to [15, 20, 25].
-        domain_lower (float): Gene value lower bound. Defaults to -7.0.
-        domain_upper (float): Gene value upper bound. Defaults to 4.0.
+        dims (int, optional): Dimensions of chromosome vector. Represents the number of items to choose from.
+        max_item_weight (float, optional): Upper bound for weight.
+        profit_correlation_factor (float, optional): Constant used in generation of weakly correlated data sets.
+        capacity (float, optional): Capacity of the knapsack.
         pop_size (int): Population size. Defaults to 30.
-        p_c (float): Probability of crossover. In range [0, 1]. Defaults to 0.8.
-        p_m (float): Probability of mutation. In range [0, 1]. Defaults to 0.1.
-        t_max (int): Maximum iterations/generations. Defaults to 50.
+        p_c (float): Probability of crossover. In range [0, 1].
+        p_m (float): Probability of mutation. In range [0, 1].
+        t_max (int): Maximum iterations/generations.
         random (np.random.Generator): The random number generator.
         population (Population): Collection of current generation's individual chromosomes.
         fitness_function (Callable): The "fitness function" or "objective function."
@@ -39,16 +38,16 @@ class GA:
     """
     def __init__(
         self,
-        dims:int=3,
-        allele_precisions:tuple[int]=None,
-        domain_lower:float=-7.0,
-        domain_upper:float=4.0,
+        dims:int=20,
+        max_item_weight:float=10.0,
+        profit_correlation_factor:float=5.0,
+        capacity:float=40.0,
         pop_size:int=300,
-        p_c:float=0.7,
-        p_m:float=0.03,
-        t_max:int=300,
+        p_c:float=0.65,
+        p_m:float=0.05,
+        t_max:int=50,
         rand_seed:int=None,
-        fitness_function:Callable=simple.fn,
+        fitness_function:Callable=binary_knapsack.fn,
         maximize:bool=True,
         Select_Mechanism:SelectionMechanism=Proportional,
         selection_parameters:dict={}
@@ -57,14 +56,13 @@ class GA:
         Initialize the parameters for a genetic algorithm.
 
         Args:
-            dims (int, optional): Dimensions of chromosome vector. Defaults to 3.
-            allele_precisions (tuple of int): Size equal to number of real values to represent. \
-                Each value is the # of bits used to represent the allele. Max sum = 256. Defaults to [15, 20, 25].
-            domain_lower (float, optional): Gene value lower bound. Defaults to -7.0.
-            domain_upper (float, optional): Gene value upper bound. Defaults to 4.0.
+            dims (int, optional): Dimensions of chromosome vector. Represents the number of items to choose from. Defaults to 20.
+            max_item_weight (float, optional): Upper bound for weight. Defaults to 10.0.
+            profit_correlation_factor (float, optional): Constant used in generation of weakly correlated data sets. Defaults to 5.
+            capacity (float, optional): Capacity of the knapsack. Defaults to 40.0.
             pop_size (int, optional): Population size. Defaults to 30.
-            p_c (float, optional): Probability of crossover. In range [0, 1]. Defaults to 0.8.
-            p_m (float, optional): Probability of mutation. In range [0, 1]. Defaults to 0.1.
+            p_c (float, optional): Probability of crossover. In range [0, 1]. Defaults to 0.65.
+            p_m (float, optional): Probability of mutation. In range [0, 1]. Defaults to 0.05.
             t_max (int, optional): Maximum iterations/generations. Defaults to 50.
             rand_seed(int, optional): Seed for random number generator.
             fitness_function (Callable, optional): Function of \vec{x}. Returns (float). default sum([x**2 for x in alleles]).
@@ -73,7 +71,6 @@ class GA:
             selection_parameters (dict, optional): The selected selection mechanism parameters.
         """
         assert dims > 0 and type(dims) is int
-        assert allele_precisions is None or (type(allele_precisions) is tuple and len(allele_precisions) == dims)
         assert pop_size > 0 and pop_size % 2 == 0
         assert p_c >= 0 and p_c <= 1
         assert p_m >= 0 and p_m <= 1
@@ -81,18 +78,16 @@ class GA:
         assert fitness_function is not None and callable(fitness_function)
         assert maximize in (False, True)
         self.dims = int(dims)
-        if allele_precisions is None:
-            self.allele_precisions = np.asarray([15, 20, 25], dtype=np.uint8)
-        else:
-            self.allele_precisions = np.asarray(allele_precisions, dtype=np.uint8)
         self._bitstring_length = None
-        self.domain_lower = float(domain_lower)
-        self.domain_upper = float(domain_upper)
+        self.max_item_weight = float(max_item_weight)
+        self.profit_correlation_factor = float(profit_correlation_factor)
+        self.capacity = float(capacity)
         self.pop_size = int(pop_size)
         self.p_c = float(p_c)
         self.p_m = float(p_m)
         self.t_max = int(t_max)
         self.t = 0
+        self.test_data_set = None
         self.population = None
         self.best_of_run = None
         self.fitness_function = fitness_function
@@ -104,6 +99,7 @@ class GA:
 
     async def simulate(self) -> Chromosome:
         """Simulate the genetic algorithm with configured parameters."""
+        self.initialize_test_data_set()
         self.initialize_population()
         self.evaluate_population()
         deque((self.iterate() for _ in np.arange(self.t_max)), maxlen=0) # execute generator
@@ -119,11 +115,11 @@ class GA:
         self.population = self.create_next_population()
         # print('evaluating')
         self.evaluate_population()
-        # if self.t % 10 == 0 or self.t == self.t_max:
-        #     self.print_stats()
+        if self.t % 10 == 0 or self.t == self.t_max:
+            self.print_stats()
         if self.population.is_converged:
             print(f'Population Converged at t={self.t}. Terminating')
-            # self.print_stats()
+            self.print_stats()
             self.t = self.t_max
 
 
@@ -211,13 +207,23 @@ class GA:
         
         Track fitness scores using a tuple containing (index, fitness_score).
         """
-        self.population.evaluate(self.fitness_function)
+        self.population.evaluate(self.test_data_set, self.fitness_function)
         if self.maximize:
             if self.best_of_run is None or self.population.high_score.fitness_score > self.best_of_run.fitness_score:
                 self.best_of_run = copy.deepcopy(self.population.high_score)
         else:
             if self.best_of_run is None or self.population.low_score.fitness_score < self.best_of_run.fitness_score:
                 self.best_of_run = copy.deepcopy(self.population.low_score)
+
+    def initialize_test_data_set(self) -> None:
+        """Initialize a population for the GA within configured parameters."""
+        weights = np.random.uniform(1, self.max_item_weight, size=self.dims)
+        profit_variances = np.random.uniform(-self.profit_correlation_factor, self.profit_correlation_factor, size=self.dims)
+        # If profit ends up below 0, set to 0 and consider it actual garbage.
+        profits = [np.max((0, weights[i] + profit_variances[i])) for i in range(self.dims)]
+        self.test_data_set = np.dstack((profits, weights))[0]
+        print('Profits\t\tWeights')
+        print(self.test_data_set)
 
     def initialize_population(self) -> None:
         """
@@ -229,7 +235,7 @@ class GA:
             raise RuntimeError('Population already initialized')
         self.population = Population(
             tuple(
-                Chromosome(self.random, self.allele_precisions, self.domain_lower, self.domain_upper)
+                Chromosome(self.random, self.dims)
                 for _ in np.arange(self.pop_size)
             )
         )
@@ -290,8 +296,7 @@ class GA:
         """L"""
         if self._bitstring_length is not None:
             return self._bitstring_length
-        assert self.allele_precisions is not None
-        self._bitstring_length = np.sum(self.allele_precisions)
+        self._bitstring_length = self.dims
         return self._bitstring_length
 
 

@@ -44,8 +44,8 @@ Defaults shown.
 
 * Number of items to choose from, $n = 20$
 * Upper bound for weight, $v = 10$
-* Profit correlation variance, $r = 5$
-* Capacity, $C = 20$
+* Profit correlation factor, $r = 5$
+* Capacity, $C = 40$
 
 ----
 
