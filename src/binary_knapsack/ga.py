@@ -7,23 +7,20 @@ import sys
 import time
 
 from collections import deque
-from typing import Callable
 
-import binary_knapsack.test_functions.binary_knapsack as binary_knapsack
 from binary_knapsack.chromosome import Chromosome
 from binary_knapsack.population import Population
 from binary_knapsack.selection_mechanism.mechanism import SelectionMechanism
 from binary_knapsack.selection_mechanism.proportional import Proportional
+from binary_knapsack.test_problem.knapsack import BinaryKnapsack
+from binary_knapsack.test_problem.problem import TestProblem
 
 
 class GA:
-    """
-    A class for a genetic algorithm (GA).
+    """A class for a genetic algorithm (GA).
 
     Attributes:
-        dims (int, optional): Dimensions of chromosome vector. Represents the number of items to choose from.
-        max_item_weight (float, optional): Upper bound for weight.
-        profit_correlation_factor (float, optional): Constant used in generation of weakly correlated data sets.
+        dims (int): Dimensions of chromosome vector. Represents the number of items to choose from.
         capacity (float, optional): Capacity of the knapsack.
         pop_size (int): Population size. Defaults to 30.
         p_c (float): Probability of crossover. In range [0, 1].
@@ -31,7 +28,9 @@ class GA:
         t_max (int): Maximum iterations/generations.
         random (np.random.Generator): The random number generator.
         population (Population): Collection of current generation's individual chromosomes.
-        fitness_function (Callable): The "fitness function" or "objective function."
+        Problem_To_Solve (TestProblem): The selected type of problem to solve.
+        problem_parameters (dict): The selected test problem parameters.
+        problem_instance (Problem_To_Solve): The instance of the "fitness function" or "objective function."
         maximize (bool): (False)[minimize]; (True)[maximize]. Default True.
         Select_Mechanism (SelectionMechanism): The selected selection mechanism. Default Proportional.
         selection_parameters (dict): The selected selection mechanism parameters.
@@ -39,33 +38,28 @@ class GA:
     def __init__(
         self,
         dims:int=20,
-        max_item_weight:float=10.0,
-        profit_correlation_factor:float=5.0,
-        capacity:float=40.0,
         pop_size:int=300,
         p_c:float=0.65,
         p_m:float=0.05,
         t_max:int=50,
         rand_seed:int=None,
-        fitness_function:Callable=binary_knapsack.fn,
+        Problem_To_Solve:TestProblem=BinaryKnapsack,
+        problem_parameters:dict={},
         maximize:bool=True,
         Select_Mechanism:SelectionMechanism=Proportional,
         selection_parameters:dict={}
     ) -> None:
-        """
-        Initialize the parameters for a genetic algorithm.
+        """Initialize the parameters for a genetic algorithm.
 
         Args:
             dims (int, optional): Dimensions of chromosome vector. Represents the number of items to choose from. Defaults to 20.
-            max_item_weight (float, optional): Upper bound for weight. Defaults to 10.0.
-            profit_correlation_factor (float, optional): Constant used in generation of weakly correlated data sets. Defaults to 5.
-            capacity (float, optional): Capacity of the knapsack. Defaults to 40.0.
             pop_size (int, optional): Population size. Defaults to 30.
             p_c (float, optional): Probability of crossover. In range [0, 1]. Defaults to 0.65.
             p_m (float, optional): Probability of mutation. In range [0, 1]. Defaults to 0.05.
             t_max (int, optional): Maximum iterations/generations. Defaults to 50.
             rand_seed(int, optional): Seed for random number generator.
-            fitness_function (Callable, optional): Function of \vec{x}. Returns (float). default sum([x**2 for x in alleles]).
+            Problem_To_Solve (TestProblem): The "fitness function" or "objective function."
+            problem_parameters (dict, optional): The selected test problem parameters.
             maximize (bool, optional): (False)[minimize]; (True)[maximize]. Default True.
             Select_Mechanism (SelectionMechanism): The selected selection mechanism. Default Proportional.
             selection_parameters (dict, optional): The selected selection mechanism parameters.
@@ -75,13 +69,9 @@ class GA:
         assert p_c >= 0 and p_c <= 1
         assert p_m >= 0 and p_m <= 1
         assert t_max > 0
-        assert fitness_function is not None and callable(fitness_function)
         assert maximize in (False, True)
         self.dims = int(dims)
         self._bitstring_length = None
-        self.max_item_weight = float(max_item_weight)
-        self.profit_correlation_factor = float(profit_correlation_factor)
-        self.capacity = float(capacity)
         self.pop_size = int(pop_size)
         self.p_c = float(p_c)
         self.p_m = float(p_m)
@@ -90,16 +80,20 @@ class GA:
         self.test_data_set = None
         self.population = None
         self.best_of_run = None
-        self.fitness_function = fitness_function
+        self.Problem_To_Solve = Problem_To_Solve
+        self.problem_parameters = problem_parameters
         self.maximize = maximize
-        self.Select_Mechanism : SelectionMechanism = Select_Mechanism
+        self.Select_Mechanism = Select_Mechanism
         self.selection_parameters = selection_parameters
         self.random = None
         self.seed_random(rand_seed)
+        self.problem_instance : TestProblem = self.Problem_To_Solve(
+            self.random,
+            **self.problem_parameters
+        )
 
     async def simulate(self) -> Chromosome:
         """Simulate the genetic algorithm with configured parameters."""
-        self.initialize_test_data_set()
         self.initialize_population()
         self.evaluate_population()
         deque((self.iterate() for _ in np.arange(self.t_max)), maxlen=0) # execute generator
@@ -142,7 +136,13 @@ class GA:
         assert self.population.is_evaluated
         # print('selecting')
         try:
-            mechanism : SelectionMechanism = self.Select_Mechanism(self.random, tuple(c.fitness_score for c in self.population.members), self.population.sum_of_fitnesses, self.maximize, **self.selection_parameters)
+            mechanism : SelectionMechanism = self.Select_Mechanism(
+                self.random,
+                tuple(c.fitness_score for c in self.population.members),
+                self.population.sum_of_fitnesses,
+                self.maximize,
+                **self.selection_parameters
+            )
         except NotImplementedError:
             print('Provided Select_Mechanism not supported.')
             sys.exit(1)
@@ -207,7 +207,7 @@ class GA:
         
         Track fitness scores using a tuple containing (index, fitness_score).
         """
-        self.population.evaluate(self.test_data_set, self.fitness_function)
+        self.population.evaluate(self.problem_instance)
         if self.maximize:
             if self.best_of_run is None or self.population.high_score.fitness_score > self.best_of_run.fitness_score:
                 self.best_of_run = copy.deepcopy(self.population.high_score)
@@ -215,19 +215,8 @@ class GA:
             if self.best_of_run is None or self.population.low_score.fitness_score < self.best_of_run.fitness_score:
                 self.best_of_run = copy.deepcopy(self.population.low_score)
 
-    def initialize_test_data_set(self) -> None:
-        """Initialize a population for the GA within configured parameters."""
-        weights = np.random.uniform(1, self.max_item_weight, size=self.dims)
-        profit_variances = np.random.uniform(-self.profit_correlation_factor, self.profit_correlation_factor, size=self.dims)
-        # If profit ends up below 0, set to 0 and consider it actual garbage.
-        profits = [np.max((0, weights[i] + profit_variances[i])) for i in range(self.dims)]
-        self.test_data_set = np.dstack((profits, weights))[0]
-        print('Profits\t\tWeights')
-        print(self.test_data_set)
-
     def initialize_population(self) -> None:
-        """
-        Initialize a population for the GA within configured parameters.
+        """Initialize a population for the GA within configured parameters.
         
         This can only happen when there is no current population.
         """

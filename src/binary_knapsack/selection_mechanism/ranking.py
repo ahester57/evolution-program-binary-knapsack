@@ -17,7 +17,13 @@ class LinearRanking(SelectionMechanism):
         max (float): The expected number of copies of the most fit individual in the next generation.
         min (float): The expected number of copies of the least fit individual in the next generation.
     """
-    def __init__(self, random:np.random.Generator, population_fitnesses:tuple[float], sum_of_fitnesses:float=None, maximize:bool=True, **kwargs) -> None:
+    def __init__(self,
+        random:np.random.Generator,
+        population_fitnesses:tuple[float],
+        sum_of_fitnesses:float=None,
+        maximize:bool=True,
+        **kwargs
+    ) -> None:
         """
         Initialize the parameters for linear ranking selection with replacement.
 

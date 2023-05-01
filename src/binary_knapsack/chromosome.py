@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from typing import Callable
+from binary_knapsack.test_problem.problem import TestProblem
 
 
 class Chromosome:
@@ -28,22 +28,21 @@ class Chromosome:
         self.fitness_cost = None
         self.bitstring = random.integers(2, size=self.num_items, dtype=np.uint8)
 
-    def evaluate(self, set_of_items:tuple[tuple[float]], fitness_function:Callable) -> None:
+    def evaluate(self, problem_instance:TestProblem) -> float:
         """Perform an evaluation of this chromosome with given fitness function.
 
         Args:
-            set_of_items (tuple[tuple[float]])
-            fitness_function (Callable): Function of \vec{x}. Returns (float).
+            problem_instance (TestProblem): Function of \vec{x}. Returns (tuple[float]).
 
         Returns:
             float: The fitness score.
         """
-        assert set_of_items is not None and len(set_of_items[0]) == 2
-        assert fitness_function is not None and callable(fitness_function)
+        assert problem_instance is not None and callable(problem_instance.try_with_bitstring)
         if self.is_evaluated:
             # no need to re-evaluate if bitstring has not changed
             return
-        self.fitness_score = fitness_function(set_of_items, self.bitstring)
+        self.fitness_score = problem_instance.try_with_bitstring(self.bitstring)
+        return self.fitness_score
 
     @property
     def bitstring(self) -> np.ndarray[np.uint8]:

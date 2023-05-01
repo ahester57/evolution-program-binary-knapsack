@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='ea_bitwise',
+    name='binary_knapsack',
     packages=find_packages()
 )

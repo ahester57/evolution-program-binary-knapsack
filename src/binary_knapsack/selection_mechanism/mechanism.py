@@ -4,9 +4,23 @@ import numpy as np
 
 
 class SelectionMechanism:
-    def __init__(self, random:np.random.Generator, population_fitnesses:tuple[float], sum_of_fitnesses:float=None, maximize:bool=True, **kwargs) -> None:
-        """
-        Initialize the parameters for proportional selection with replacement.
+    """Represents a generic selection mechanism. Does not function as one. Only provides base.
+
+    Attributes:
+        random (np.random.Generator): The random number generator.
+        population_fitnesses (tuple of float): The population fitness scores, in order.
+        sum_of_fitnesses (float, optional): The sum of the populations' fitness scores.
+        maximize (bool, optional): (False)[minimize]; (True)[maximize]. Default True.
+        pop_size (int): The size of the population.
+    """
+    def __init__(self,
+        random:np.random.Generator,
+        population_fitnesses:tuple[float],
+        sum_of_fitnesses:float=None,
+        maximize:bool=True,
+        **kwargs
+    ) -> None:
+        """Initialize the parameters for selection.
 
         Args:
             random (np.random.Generator): The random number generator.
