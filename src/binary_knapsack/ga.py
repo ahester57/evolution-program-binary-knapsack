@@ -37,14 +37,13 @@ class GA:
     """
     def __init__(
         self,
-        dims:int=20,
         pop_size:int=300,
         p_c:float=0.65,
         p_m:float=0.05,
         t_max:int=50,
         rand_seed:int=None,
         Problem_To_Solve:TestProblem=BinaryKnapsack,
-        problem_parameters:dict={},
+        problem_parameters:dict={'num_items': 20},
         maximize:bool=True,
         Select_Mechanism:SelectionMechanism=Proportional,
         selection_parameters:dict={}
@@ -52,7 +51,6 @@ class GA:
         """Initialize the parameters for a genetic algorithm.
 
         Args:
-            dims (int, optional): Dimensions of chromosome vector. Represents the number of items to choose from. Defaults to 20.
             pop_size (int, optional): Population size. Defaults to 30.
             p_c (float, optional): Probability of crossover. In range [0, 1]. Defaults to 0.65.
             p_m (float, optional): Probability of mutation. In range [0, 1]. Defaults to 0.05.
@@ -64,13 +62,14 @@ class GA:
             Select_Mechanism (SelectionMechanism): The selected selection mechanism. Default Proportional.
             selection_parameters (dict, optional): The selected selection mechanism parameters.
         """
-        assert dims > 0 and type(dims) is int
         assert pop_size > 0 and pop_size % 2 == 0
         assert p_c >= 0 and p_c <= 1
         assert p_m >= 0 and p_m <= 1
         assert t_max > 0
         assert maximize in (False, True)
-        self.dims = int(dims)
+        assert 'num_items' in problem_parameters.keys()
+        self.dims = int(problem_parameters['num_items'])
+        assert self.dims > 0
         self._bitstring_length = None
         self.pop_size = int(pop_size)
         self.p_c = float(p_c)

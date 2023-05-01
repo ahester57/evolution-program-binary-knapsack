@@ -179,7 +179,6 @@ Selection Mechanisms
                 Select_Mechanism, \
                     selection_parameters = self.selection_mechanism_menu()
                 options = {
-                    'dims': self.prompt_int('Dimensions', 20),
                     'pop_size': self.prompt_int('Population Size', 30),
                     'p_c': self.prompt_float('Prob. of Crossover', 0.65),
                     'p_m': self.prompt_float('Prob. of Mutation', 0.05),
