@@ -7,16 +7,16 @@ class TestProblem(object):
     """Represents a generic test problem. Does not function as one. Only provides base.
 
     Attributes:
-        random (np.random.Generator): The random number generator.
+        dims (int): The number of items to choose from.
     """
-    def __init__(self, random:np.random.Generator) -> None:
+    def __init__(self, dims:int=20) -> None:
         """Initialize the problem parameters.
 
         Args:
-            random (np.random.Generator): The random number generator.
+            dims (int): The number of items to choose from.
         """
-        assert type(random) is np.random.Generator
-        self.random = random
+        self.dims = int(dims)
+        assert self.dims > 0
 
     def try_with_bitstring(self, soln:np.ndarray[np.uint8]) -> tuple:
         """Evaluate a bit-string solution to the problem."""

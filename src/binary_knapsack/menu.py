@@ -228,8 +228,7 @@ Problems To Solve
                     'maximize': self.prompt_bool('Maximize', True),
                     'Select_Mechanism': Select_Mechanism,
                     'selection_parameters': selection_parameters,
-                    'Problem_To_Solve': Problem_To_Solve,
-                    'problem_parameters': problem_parameters,
+                    'problem_instance': Problem_To_Solve(**problem_parameters),
                     'Crossover_Method': Crossover_Method,
                     'crossover_parameters': crossover_parameters
                 }
@@ -247,6 +246,7 @@ Problems To Solve
                     ])
                     print(best_of_runs)
                     best_of_runs.sort(key=lambda x:x.fitness_score, reverse=options['maximize'])
+                    options.update({'problem_parameters': problem_parameters})
                     print(f'\nOptions: {json.dumps(options, sort_keys=True, indent=2, default=str)}')
                     print(f'\nStats over {num_runs} runs:')
                     fitness_scores = [bor.fitness_score for bor in best_of_runs]

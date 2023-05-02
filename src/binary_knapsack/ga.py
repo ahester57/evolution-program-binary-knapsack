@@ -42,8 +42,7 @@ class GA:
         p_m:float=0.05,
         t_max:int=50,
         rand_seed:int=None,
-        Problem_To_Solve:TestProblem=BinaryKnapsack,
-        problem_parameters:dict={'num_items': 20},
+        problem_instance:TestProblem=None,
         maximize:bool=True,
         Select_Mechanism:SelectionMechanism=Proportional,
         selection_parameters:dict={},
@@ -57,8 +56,7 @@ class GA:
             p_m (float, optional): Probability of mutation. In range [0, 1]. Defaults to 0.05.
             t_max (int, optional): Maximum iterations/generations. Defaults to 50.
             rand_seed(int, optional): Seed for random number generator.
-            Problem_To_Solve (TestProblem): The type of "objective function." Defaults BinaryKnapsack.
-            problem_parameters (dict, optional): The selected test problem parameters.
+            problem_instance (TestProblem): The configured instance of the "objective function."
             maximize (bool, optional): (False)[minimize]; (True)[maximize]. Default True.
             Select_Mechanism (SelectionMechanism): The selected selection mechanism. Default Proportional.
             selection_parameters (dict, optional): The selected selection mechanism parameters.
@@ -69,9 +67,9 @@ class GA:
         assert p_m >= 0 and p_m <= 1
         assert t_max > 0
         assert maximize in (False, True)
-        assert 'num_items' in problem_parameters.keys()
-        self.dims = int(problem_parameters['num_items'])
-        assert self.dims > 0
+        assert problem_instance is not None and problem_instance.dims is not None
+        self.problem_instance = problem_instance
+        assert self.problem_instance.dims > 0
         self._bitstring_length = None
         self.pop_size = int(pop_size)
         self.p_m = float(p_m)
@@ -85,10 +83,6 @@ class GA:
         self.selection_parameters = selection_parameters
         self.random = None
         self.seed_random(rand_seed)
-        self.problem_instance : TestProblem = Problem_To_Solve(
-            self.random,
-            **problem_parameters
-        )
         self.crossover_instance : CrossoverMethod = Crossover_Method(
             self.random,
             **crossover_parameters
@@ -210,7 +204,7 @@ class GA:
             raise RuntimeError('Population already initialized')
         self.population = Population(
             tuple(
-                Chromosome(self.random, self.dims)
+                Chromosome(self.random, self.problem_instance.dims)
                 for _ in np.arange(self.pop_size)
             )
         )
@@ -271,9 +265,12 @@ class GA:
         """L"""
         if self._bitstring_length is not None:
             return self._bitstring_length
-        self._bitstring_length = self.dims
+        self._bitstring_length = self.problem_instance.dims
         return self._bitstring_length
 
 
 if __name__ == '__main__':
-    asyncio.run(GA(rand_seed=None).simulate())
+    asyncio.run(GA(
+        rand_seed=None,
+        problem_instance=BinaryKnapsack()
+    ).simulate())
