@@ -3,7 +3,7 @@
 import numpy as np
 
 from binary_knapsack.chromosome import Chromosome
-from crossover_method.method import CrossoverMethod
+from binary_knapsack.crossover_method.method import CrossoverMethod
 
 
 class PUniform(CrossoverMethod):

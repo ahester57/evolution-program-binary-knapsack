@@ -14,8 +14,8 @@ from binary_knapsack.selection_mechanism.mechanism import SelectionMechanism
 from binary_knapsack.selection_mechanism.proportional import Proportional
 from binary_knapsack.test_problem.knapsack import BinaryKnapsack
 from binary_knapsack.test_problem.problem import TestProblem
-from crossover_method.method import CrossoverMethod
-from crossover_method.single_point import SinglePoint
+from binary_knapsack.crossover_method.method import CrossoverMethod
+from binary_knapsack.crossover_method.single_point import SinglePoint
 
 
 class GA:

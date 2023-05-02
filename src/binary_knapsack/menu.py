@@ -14,10 +14,10 @@ from binary_knapsack.selection_mechanism.tournament import DeterministicTourname
 from binary_knapsack.selection_mechanism.truncation import Truncation
 from binary_knapsack.test_problem.knapsack import BinaryKnapsack
 from binary_knapsack.test_problem.problem import TestProblem
-from crossover_method.method import CrossoverMethod
-from crossover_method.multi_parent import MajorityVoting
-from crossover_method.p_uniform import PUniform
-from crossover_method.single_point import SinglePoint
+from binary_knapsack.crossover_method.method import CrossoverMethod
+from binary_knapsack.crossover_method.multi_parent import MajorityVoting
+from binary_knapsack.crossover_method.p_uniform import PUniform
+from binary_knapsack.crossover_method.single_point import SinglePoint
 
 
 class GAMenu(object):

@@ -3,7 +3,6 @@
 import numpy as np
 
 from collections import deque
-from typing import Callable
 
 from binary_knapsack.chromosome import Chromosome
 from binary_knapsack.test_problem.problem import TestProblem
