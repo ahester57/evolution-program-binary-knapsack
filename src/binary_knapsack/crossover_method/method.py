@@ -16,7 +16,7 @@ class CrossoverMethod:
         random:np.random.Generator,
         p_c:float=0.65
     ) -> None:
-        """Initialize the parameters for selection.
+        """Initialize the parameters for crossover.
 
         Args:
             random (np.random.Generator): The random number generator.
