@@ -24,8 +24,7 @@ class DeterministicTournament(SelectionMechanism):
         maximize:bool=True,
         **kwargs
     ) -> None:
-        """
-        Initialize the parameters for deterministic tournament selection.
+        """Initialize the parameters for deterministic tournament selection.
 
         Args:
             random (np.random.Generator): The random number generator.
@@ -89,8 +88,7 @@ class StochasticTournament(DeterministicTournament):
         maximize:bool=True,
         **kwargs
     ) -> None:
-        """
-        Initialize the parameters for stochastic tournament selection.
+        """Initialize the parameters for stochastic tournament selection.
 
         Args:
             random (np.random.Generator): The random number generator.

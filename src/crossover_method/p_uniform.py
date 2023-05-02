@@ -7,7 +7,7 @@ from crossover_method.method import CrossoverMethod
 
 
 class PUniform(CrossoverMethod):
-    """Facilitates p-uniform crossver between 2 parents.
+    """Facilitates p-uniform crossover between 2 parents.
 
     Attributes:
         random (np.random.Generator): The random number generator.
@@ -19,8 +19,7 @@ class PUniform(CrossoverMethod):
         p_c:float,
         p:float=0.5
     ) -> None:
-        """
-        Initialize the parameters for linear ranking selection with replacement.
+        """Initialize the parameters for p-uniform crossover.
 
         Args:
             random (np.random.Generator): The random number generator.
@@ -28,10 +27,11 @@ class PUniform(CrossoverMethod):
             p (float): Probability of parent 1 donating its allele (independent for each locus).
         """
         super().__init__(random, p_c)
+        assert p >= 0 and p <= 1
         self.p = p
 
     def crossover(self, population:list[Chromosome]) -> list[Chromosome]:
-        """Perform single cut-point crossover on the population using self.p_c as probability of occurrence.
+        """Perform p-uniform crossover on the population using self.p_c as probability of occurrence.
 
         Args:
             population (list of Chromosome): The population to act upon.

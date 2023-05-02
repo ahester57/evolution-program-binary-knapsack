@@ -17,8 +17,7 @@ class SinglePoint(CrossoverMethod):
         random:np.random.Generator,
         p_c:float
     ) -> None:
-        """
-        Initialize the parameters for linear ranking selection with replacement.
+        """Initialize the parameters for single cut-point crossover.
 
         Args:
             random (np.random.Generator): The random number generator.

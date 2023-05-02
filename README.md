@@ -112,9 +112,25 @@ An individual's probability of advancement is proportional to its rank.
 
 ## Crossover Methods
 
-### Single-point Crossover
+### Single-Point Crossover
 
-From two parents, choose a cut-point and swap sides of each parent to create two children.
+From two parents, randomly choose a cut-point and swap sides of each parent to create two children.
+
+### P-Uniform Crossover
+
+From two parents and for each locus, randomly choose which parent to use at that locus. Choose the better parent with probability $p$. This process produces two children per set of parents.
+
+#### Additional Parameters for P-Uniform Crossover
+
+* Probability that the higher-performing parent donates their allele, $p = 0.5$
+
+### Majority Voting Crossover
+
+From multiple parents and for each locus, deterministicly choose 
+
+#### Additional Parameters for Majority Voting Crossover
+
+* Probability that the higher-performing parent donates their allele, $p = 0.5$
 
 ----
 

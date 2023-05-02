@@ -15,6 +15,7 @@ from binary_knapsack.selection_mechanism.truncation import Truncation
 from binary_knapsack.test_problem.knapsack import BinaryKnapsack
 from binary_knapsack.test_problem.problem import TestProblem
 from crossover_method.method import CrossoverMethod
+from crossover_method.multi_parent import MajorityVoting
 from crossover_method.p_uniform import PUniform
 from crossover_method.single_point import SinglePoint
 
@@ -107,12 +108,14 @@ Problems To Solve
 =================================
     1 - Single Point
     2 - P-Uniform
+    3 - Majority Voting
 =================================
 ''')
         options = [
             None,
             SinglePoint,
-            PUniform
+            PUniform,
+            MajorityVoting
         ]
         ans = -1
         while ans not in range(1, len(options)):

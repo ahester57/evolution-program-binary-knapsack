@@ -9,12 +9,11 @@ class Chromosome:
     """Depicts one solution in the population. Adapted for the 0/1 Knapsack problem.
 
     Attributes:
-        random (np.random.Generator): The random number generator.
         num_items (int): The number of items to choose from.
         bitstring (np.ndarray of uint8): The bitstring representation of the alleles.
-        fitness_score (float): The fitness score
+        fitness_score (float): The fitness score.
+        fitness_cost (float): The fitness cost.
     """
-
     def __init__(self, random:np.random.Generator, num_items:int) -> None:
         """Depicts one individual in the population.
 
@@ -26,7 +25,10 @@ class Chromosome:
         self.num_items = num_items
         self.fitness_score = None
         self.fitness_cost = None
-        self.bitstring = random.integers(2, size=self.num_items, dtype=np.uint8)
+        if random is not None:
+            self.bitstring = random.integers(2, size=self.num_items, dtype=np.uint8)
+        else:
+            self.bitstring = np.zeros(self.num_items, dtype=np.uint8)
 
     def evaluate(self, problem_instance:TestProblem) -> float:
         """Perform an evaluation of this chromosome with given fitness function.
