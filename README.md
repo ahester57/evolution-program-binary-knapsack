@@ -126,7 +126,7 @@ From two parents and for each locus, randomly choose which parent to use at that
 
 ### Majority Voting Crossover
 
-From multiple parents and for each locus, deterministicly choose 
+From multiple parents and for each locus, deterministicly choose the most common allele for that locus.
 
 #### Additional Parameters for Majority Voting Crossover
 
