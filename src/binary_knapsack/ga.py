@@ -32,8 +32,6 @@ class GA:
         maximize (bool): (False)[minimize]; (True)[maximize].
         Select_Mechanism (SelectionMechanism): The selected selection mechanism.
         selection_parameters (dict): The selected selection mechanism parameters.
-        Crossover_Method (CrossoverMethod): The selected crossover method.
-        crossover_parameters (dict): The selected crossover method parameters.
         crossover_instance (CrossoverMethod): The configured instance of the chosen method.
     """
     def __init__(
@@ -112,6 +110,22 @@ class GA:
             self.print_stats()
             self.t = self.t_max
 
+    def evaluate_population(self) -> None:
+        """Evaluate an entire iteration/generation's population.
+        
+        Track fitness scores using a tuple containing (index, fitness_score).
+        """
+        try:
+            self.population.evaluate(self.problem_instance)
+        except NotImplementedError:
+            print('Provided TestProblem not supported.')
+            sys.exit(1)
+        if self.maximize:
+            if self.best_of_run is None or self.population.high_score.fitness_score > self.best_of_run.fitness_score:
+                self.best_of_run = copy.deepcopy(self.population.high_score)
+        else:
+            if self.best_of_run is None or self.population.low_score.fitness_score < self.best_of_run.fitness_score:
+                self.best_of_run = copy.deepcopy(self.population.low_score)
 
     def create_next_population(self) -> Population:
         """Perform selection, crossover, and mutation on the population.
@@ -140,7 +154,7 @@ class GA:
                 **self.selection_parameters
             )
         except NotImplementedError:
-            print('Provided Select_Mechanism not supported.')
+            print('Provided SelectionMechanism not supported.')
             sys.exit(1)
         return [copy.deepcopy(self.population.members[i]) for i in mechanism.next_population()]
 
@@ -153,7 +167,11 @@ class GA:
         Returns:
             list of Chromosome: A new population after a round of crossover.
         """
-        return self.crossover_instance.crossover(population)
+        try:
+            return self.crossover_instance.crossover(population)
+        except NotImplementedError:
+            print('Provided CrossoverMethod not supported.')
+            sys.exit(1)
 
     def bitwise_gene_mutation(self, population:list[Chromosome]) -> list[Chromosome]:
         """Perform gene-wise mutation on the population using self.p_m as probability of occurrence.
@@ -181,19 +199,6 @@ class GA:
                 c.bitstring = bitstring
             next_gen.append(c)
         return next_gen
-
-    def evaluate_population(self) -> None:
-        """Evaluate an entire iteration/generation's population.
-        
-        Track fitness scores using a tuple containing (index, fitness_score).
-        """
-        self.population.evaluate(self.problem_instance)
-        if self.maximize:
-            if self.best_of_run is None or self.population.high_score.fitness_score > self.best_of_run.fitness_score:
-                self.best_of_run = copy.deepcopy(self.population.high_score)
-        else:
-            if self.best_of_run is None or self.population.low_score.fitness_score < self.best_of_run.fitness_score:
-                self.best_of_run = copy.deepcopy(self.population.low_score)
 
     def initialize_population(self) -> None:
         """Initialize a population for the GA within configured parameters.

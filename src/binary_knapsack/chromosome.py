@@ -43,7 +43,7 @@ class Chromosome:
         if self.is_evaluated:
             # no need to re-evaluate if bitstring has not changed
             return
-        self.fitness_score = problem_instance.try_with_bitstring(self.bitstring)
+        self.fitness_score, self.fitness_cost = problem_instance.try_with_bitstring(self.bitstring)
         return self.fitness_score
 
     @property
@@ -62,14 +62,18 @@ class Chromosome:
         return self._fitness_score
 
     @fitness_score.setter
-    def fitness_score(self, value:tuple[float]) -> None:
-        assert value is None or type(value) is tuple
-        if value is None:
-            self._fitness_score = value
-            self.fitness_cost = value
-        else:
-            self._fitness_score = value[0]
-            self.fitness_cost = value[1]
+    def fitness_score(self, value:np.float64) -> None:
+        assert value is None or type(value) is np.float64
+        self._fitness_score = value
+
+    @property
+    def fitness_cost(self) -> np.float64:
+        return self._fitness_cost
+
+    @fitness_cost.setter
+    def fitness_cost(self, value:np.float64) -> None:
+        assert value is None or type(value) is np.float64
+        self._fitness_cost = value
 
     @property
     def is_evaluated(self) -> bool:

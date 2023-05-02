@@ -55,7 +55,7 @@ class BinaryKnapsack(TestProblem):
             if x == 1:
                 profit += self.profits[i]
                 weight += self.weights[i]
-        return (profit, weight)
+        return profit, weight
 
     @staticmethod
     def parameters() -> dict[str, tuple]:
