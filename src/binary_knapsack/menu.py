@@ -15,6 +15,7 @@ from binary_knapsack.selection_mechanism.truncation import Truncation
 from binary_knapsack.test_problem.knapsack import BinaryKnapsack
 from binary_knapsack.test_problem.problem import TestProblem
 from crossover_method.method import CrossoverMethod
+from crossover_method.p_uniform import PUniform
 from crossover_method.single_point import SinglePoint
 
 
@@ -34,16 +35,17 @@ class GAMenu(object):
 =================================
 Problems To Solve
 =================================
-    1 - BinaryKnapsack
+    1 - Binary Knapsack
 =================================
 ''')
-        ans = -1
-        while ans not in range(1, 2):
-            ans = self.prompt_int('Which problem?', 1)
-        Problem_To_Solve : TestProblem = [
+        options = [
             None,
             BinaryKnapsack
-        ][ans]
+        ]
+        ans = -1
+        while ans not in range(1, len(options)):
+            ans = self.prompt_int('Which problem?', 1)
+        Problem_To_Solve : TestProblem = options[ans]
         problem_parameters = {}
         for k, v in Problem_To_Solve.parameters().items():
             dtype = type(v[1])
@@ -71,17 +73,18 @@ Selection Mechanisms
     5 - Linear Ranking
 =================================
 ''')
-        ans = -1
-        while ans not in range(1, 6):
-            ans = self.prompt_int('Which mechanism?', None)
-        Select_Mechanism : SelectionMechanism = [
+        options = [
             None,
             Proportional,
             Truncation,
             DeterministicTournament,
             StochasticTournament,
             LinearRanking
-        ][ans]
+        ]
+        ans = -1
+        while ans not in range(1, len(options)):
+            ans = self.prompt_int('Which mechanism?', None)
+        Select_Mechanism : SelectionMechanism = options[ans]
         selection_parameters = {}
         for k, v in Select_Mechanism.parameters().items():
             dtype = type(v[1])
@@ -102,16 +105,19 @@ Selection Mechanisms
 =================================
 Problems To Solve
 =================================
-    1 - SinglePoint
+    1 - Single Point
+    2 - P-Uniform
 =================================
 ''')
-        ans = -1
-        while ans not in range(1, 2):
-            ans = self.prompt_int('Which Crossover Method?', 1)
-        Crossover_Method : CrossoverMethod = [
+        options = [
             None,
-            SinglePoint
-        ][ans]
+            SinglePoint,
+            PUniform
+        ]
+        ans = -1
+        while ans not in range(1, len(options)):
+            ans = self.prompt_int('Which Crossover Method?', 1)
+        Crossover_Method : CrossoverMethod = options[ans]
         crossover_parameters = {}
         for k, v in Crossover_Method.parameters().items():
             dtype = type(v[1])
@@ -244,6 +250,8 @@ Problems To Solve
                     print(f'Best: {best_of_runs[0]}')
                     print(f'Mean: {np.mean(fitness_scores)}')
                     print(f'Standard Deviation: {np.std(fitness_scores)}')
+            except AssertionError as ae:
+                raise ae
             except Exception as e:
                 print(f'Exception {e.args} occurred in {self.__class__}.enter_menu')
 
