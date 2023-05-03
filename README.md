@@ -16,11 +16,11 @@ $$\vec{x} = \langle x_1, x_2, \ldots, x_n \rangle, x_i \in \lbrace 0, 1 \rbrace,
 
 ### which maximizes
 
-$$P(x) = \sum_i^n{(x_i \times P_i)},$$
+$$P(x) = \sum_i^n{(x_i \cdot P_i)},$$
 
 ### subject to
 
-$$\sum_i^n{(x_i \times W_i)} \leq C.$$
+$$\sum_i^n{(x_i \cdot W_i)} \leq C.$$
 
 ----
 
@@ -66,6 +66,18 @@ Defaults shown.
 
 ## Penalty Methods
 
+### Logarithmic Penalty
+
+I chose this static penalty method because of its ease of use and proven performance.
+
+$$Penalty(x) = log_2(1 + \rho \cdot (\sum_i^n{x_i \cdot W_i} - C))$$
+
+#### Parameters for Dynamic Penalty
+
+* Scalar of degree of violation, $\rho = 1.3$
+
+----
+
 ### Absolute Penalty
 
 Overage of any constraint leads to a zero fitness.
@@ -78,13 +90,14 @@ I chose this static penalty method because of its ease of use and to prove penal
 
 As generations go by, the penalty for the same violation goes up.
 
-$$Penalty(x) = (C * t)^{alpha} * \sum_j^m{f_j(x)^{beta}}$$
+$$Penalty(x) = (c \cdot t)^{alpha} \cdot \sum_j^m{f_j(x)^{beta}}$$
+, where $m$ is the number of constraints.
 
 I chose this dynamic penalty method to test the claims that this method leads to premature convergence.
 
 #### Parameters for Dynamic Penalty
 
-* Scalar of generation number, $C = 0.5$
+* Scalar of generation number, $c = 0.5$
 * Exponent of temporal harshening, $alpha = 2.0$
 * Exponent of degree of violation, $beta = 2.0$
 

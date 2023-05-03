@@ -113,8 +113,8 @@ class GA:
         self.population = self.create_next_population()
         # print('evaluating')
         self.evaluate_population()
-        if self.t % 10 == 0 or self.t == self.t_max:
-            self.print_stats()
+        # if self.t % 10 == 0 or self.t == self.t_max:
+            # self.print_stats()
         if self.population.is_converged:
             print(f'Population Converged at t={self.t}. Terminating')
             self.print_stats()

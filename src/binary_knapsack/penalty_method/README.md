@@ -1,6 +1,18 @@
 
 ## Penalty Methods
 
+### Logarithmic Penalty
+
+I chose this static penalty method because of its ease of use and proven performance.
+
+$$Penalty(x) = log_2(1 + \rho \cdot (\sum_i^n{x_i \cdot W_i} - C))$$
+
+#### Parameters for Dynamic Penalty
+
+* Scalar of degree of violation, $\rho = 1.3$
+
+----
+
 ### Absolute Penalty
 
 Overage of any constraint leads to a zero fitness.
