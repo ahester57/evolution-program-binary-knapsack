@@ -9,12 +9,13 @@ class PenaltyMethod:
     Attributes:
         constraints (list): The constraints.
     """
-    def __init__(self, constraints) -> None:
+    def __init__(self, constraints: dict) -> None:
         """Initialize the parameters for penalization.
         
         Args:
-            constraints (list): The constraints.
+            constraints (dict): The constraints.
         """
+        assert type(constraints) is dict
         self.constraints = constraints
 
     def penalize(self, population:list[Chromosome]) -> list[Chromosome]:
@@ -29,6 +30,6 @@ class PenaltyMethod:
         raise NotImplementedError
 
     @staticmethod
-    def parameters(self) -> dict[str, tuple]:
+    def parameters() -> dict[str, tuple]:
         """{'param_name': tuple('description', default_value)}"""
         raise NotImplementedError

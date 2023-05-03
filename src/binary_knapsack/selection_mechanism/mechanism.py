@@ -42,6 +42,6 @@ class SelectionMechanism:
         raise NotImplementedError
 
     @staticmethod
-    def parameters(self) -> dict[str, tuple]:
+    def parameters() -> dict[str, tuple]:
         """{'param_name': tuple('description', default_value)}"""
         raise NotImplementedError

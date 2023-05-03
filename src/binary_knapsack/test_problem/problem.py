@@ -22,6 +22,11 @@ class TestProblem(object):
         """Evaluate a bit-string solution to the problem."""
         raise NotImplementedError
 
+    @property
+    def constraints(self) -> dict:
+        """{'chromosome_attribute': max_limit}"""
+        raise NotImplementedError
+
     @staticmethod
     def parameters() -> dict[str, tuple]:
         """{'param_name': tuple('description', default_value)}"""

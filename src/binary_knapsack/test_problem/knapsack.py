@@ -57,6 +57,11 @@ class BinaryKnapsack(TestProblem):
                 weight += self.weights[i]
         return profit, weight
 
+    @property
+    def constraints(self) -> dict:
+        """{'chromosome_attribute': max_limit}"""
+        return {'fitness_cost': self.capacity}
+
     @staticmethod
     def parameters() -> dict[str, tuple]:
         return {

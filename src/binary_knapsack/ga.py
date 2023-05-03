@@ -9,6 +9,7 @@ import time
 from collections import deque
 
 from binary_knapsack.chromosome import Chromosome
+from binary_knapsack.penalty_method.absolute import AbsolutePenalty
 from binary_knapsack.population import Population
 from binary_knapsack.selection_mechanism.mechanism import SelectionMechanism
 from binary_knapsack.selection_mechanism.proportional import Proportional
@@ -117,6 +118,7 @@ class GA:
         """
         try:
             self.population.evaluate(self.problem_instance)
+            AbsolutePenalty(self.problem_instance.constraints).penalize(self.population.members)
         except NotImplementedError:
             print('Provided TestProblem not supported.')
             sys.exit(1)
