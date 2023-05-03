@@ -36,8 +36,7 @@ class BinaryKnapsack(TestProblem):
         profit_variances = np.random.uniform(-profit_correlation_factor, profit_correlation_factor, size=self.dims)
         # If profit ends up below 0, set to 0 and consider it actual garbage.
         self.profits = [np.max((0, self.weights[i] + profit_variances[i])) for i in range(self.dims)]
-        print('Profits\t\tWeights')
-        print(np.dstack((self.profits, self.weights))[0])
+        print(self)
 
     def try_with_bitstring(self, soln:np.ndarray[np.uint8]) -> tuple[float]:
         """Evaluate a bit-string solution to the problem.
@@ -71,6 +70,9 @@ class BinaryKnapsack(TestProblem):
             'profit_correlation_factor': ('Enter Profit Correlation Factor', 5.0),
             'capacity': ('Enter Knapsack Capacity', 40.0)
         }
+
+    def __repr__(self) -> str:
+        return f'Profits\t\tWeights\n{np.dstack((self.profits, self.weights))[0]}'
 
 
 if __name__ == '__main__':

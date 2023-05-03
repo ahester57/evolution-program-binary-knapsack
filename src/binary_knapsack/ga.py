@@ -102,7 +102,7 @@ class GA:
         self.initialize_population()
         self.evaluate_population()
         deque((self.iterate() for _ in np.arange(self.t_max)), maxlen=0) # execute generator
-        return self.best_of_run
+        return self.best_of_run, self.best_of_run_generation
 
     def iterate(self) -> None:
         """Perform one iteration of the simulation."""

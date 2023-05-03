@@ -9,6 +9,7 @@ import time
 from binary_knapsack.ga import GA
 from binary_knapsack.penalty_method.absolute import AbsolutePenalty
 from binary_knapsack.penalty_method.dynamic import DynamicPenalty
+from binary_knapsack.penalty_method.logarithmic import LogarithmicPenalty
 from binary_knapsack.penalty_method.method import PenaltyMethod
 from binary_knapsack.selection_mechanism.mechanism import SelectionMechanism
 from binary_knapsack.selection_mechanism.proportional import Proportional
@@ -70,12 +71,14 @@ class GAMenu(object):
 =================================
         Penalty Methods
 =================================
-    1 - Absolute
-    2 - Dynamic
+    1 - Logarithmic
+    2 - Absolute
+    3 - Dynamic
 =================================
 ''')
         options = [
             None,
+            LogarithmicPenalty,
             AbsolutePenalty,
             DynamicPenalty
         ]
@@ -253,6 +256,7 @@ class GAMenu(object):
                 random.seed(time.time())
                 Problem_To_Solve, \
                     problem_parameters = self.problem_to_solve_menu()
+                problem_instance = Problem_To_Solve(**problem_parameters)
                 Penalty_Method, \
                     penalty_parameters = self.penalty_method_menu()
                 Select_Mechanism, \
@@ -262,17 +266,17 @@ class GAMenu(object):
                 options = {
                     'pop_size': self.prompt_int('Population Size', 30),
                     'p_m': self.prompt_float('Probability of Mutation', 0.05),
-                    't_max': self.prompt_int('Max Generations', 300),
+                    't_max': self.prompt_int('Max Generations', 50),
                     'maximize': self.prompt_bool('Maximize', True),
                     'Select_Mechanism': Select_Mechanism,
                     'selection_parameters': selection_parameters,
-                    'problem_instance': Problem_To_Solve(**problem_parameters),
+                    'problem_instance': problem_instance,
                     'Crossover_Method': Crossover_Method,
                     'crossover_parameters': crossover_parameters,
                     'Penalty_Method': Penalty_Method,
                     'penalty_parameters': penalty_parameters
                 }
-                if self.prompt_bool('Single run?', True):
+                if self.prompt_bool('Single run?', False):
                     await GA(
                         **options,
                         rand_seed=self.prompt_int('Random Seed', random.randint(1, 123456789))
@@ -285,14 +289,18 @@ class GAMenu(object):
                         for r in range(num_runs)
                     ])
                     print(best_of_runs)
-                    best_of_runs.sort(key=lambda x:x.fitness_score, reverse=options['maximize'])
+                    print(problem_instance)
+                    best_of_runs.sort(key=lambda x:x[0].fitness_score, reverse=options['maximize'])
                     options.update({'problem_parameters': problem_parameters})
                     print(f'\nOptions: {json.dumps(options, sort_keys=True, indent=2, default=str)}')
                     print(f'\nStats over {num_runs} runs:')
-                    fitness_scores = [bor.fitness_score for bor in best_of_runs]
-                    print(f'Best: {best_of_runs[0]}')
-                    print(f'Mean: {np.mean(fitness_scores)}')
-                    print(f'Standard Deviation: {np.std(fitness_scores)}')
+                    fitness_scores = [bor[0].fitness_score for bor in best_of_runs]
+                    generations = [bor[1] for bor in best_of_runs]
+                    print(f'Best Overall: {best_of_runs[0]}')
+                    print(f'Mean Best Fitness: {np.mean(fitness_scores)}')
+                    print(f'Standard Deviation of Best Fitness: {np.std(fitness_scores)}')
+                    print(f'Mean Generation Best Was Acheived: {np.mean(generations)}')
+                    print(f'Standard Deviation of Generations: {np.std(generations)}')
             except AssertionError as ae:
                 raise ae
             except Exception as e:

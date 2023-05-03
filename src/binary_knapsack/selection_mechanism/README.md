@@ -35,7 +35,7 @@ with a typically small random chance.
 
 #### Parameters for Stochastic Tournament Selection
 
-* Probability of an upset, $prob = 0.9$
+* Probability of the higher performer winning, $prob = 0.9$
 
 ----
 
