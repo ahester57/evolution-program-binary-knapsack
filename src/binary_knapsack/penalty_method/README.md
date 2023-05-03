@@ -13,7 +13,7 @@ $$Penalty(x) = log_2(1 + \rho \cdot (\sum_i^n{x_i \cdot W_i} - C))$$
 
 #### Results
 
-```
+```yaml
 Stats over 30 runs:
 Best Overall: (Score: 56.96086516860768 :: [0 0 1 1 1 1 1 1 0 1 0 0 0 0 0 0 0 0 0 0] => costing 39.99900703419182, 46)
 Mean Best Fitness: 53.06670943662913
@@ -33,7 +33,7 @@ I chose this static penalty method because of its ease of use and to prove penal
 #### Results
 
 I could not get results due to the following error:
-```
+```yaml
   File ".\src\binary_knapsack\selection_mechanism\proportional.py", line 49, in _generate_pmf
     assert self.sum_of_fitnesses > 0
            ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -60,7 +60,7 @@ I chose this dynamic penalty method to test the claims that this method leads to
 
 #### Results
 
-```
+```yaml
 Stats over 30 runs:
 Best Overall: (Score: 55.5352304177474 :: [0 1 0 1 1 0 1 1 0 1 1 0 0 0 0 0 0 0 0 0] => costing 39.49372651844115, 50)
 Mean Best Fitness: 52.74168473724467

@@ -49,7 +49,7 @@ Defaults shown.
 
 ## Example Menu
 
-```
+```yaml
 =================================
         Problems To Solve
 =================================
@@ -125,7 +125,7 @@ Number of Runs [30]:
 ```
 ## Example Profits | Weights
 
-```
+```yaml
 Profits         Weights
 [[ 1.41120996  4.66918325]
  [ 0.98976516  1.49829436]
@@ -153,7 +153,7 @@ Profits         Weights
 
 ## Example Default Options
 
-```
+```yaml
 Options: {
   "Crossover_Method": "<class 'binary_knapsack.crossover_method.single_point.SinglePoint'>",
   "Penalty_Method": "<class 'binary_knapsack.penalty_method.logarithmic.LogarithmicPenalty'>",
@@ -212,7 +212,7 @@ $$Penalty(x) = log_2(1 + \rho \cdot (\sum_i^n{x_i \cdot W_i} - C))$$
 
 #### Results
 
-```
+```yaml
 Stats over 30 runs:
 Best Overall: (Score: 56.96086516860768 :: [0 0 1 1 1 1 1 1 0 1 0 0 0 0 0 0 0 0 0 0] => costing 39.99900703419182, 46)
 Mean Best Fitness: 53.06670943662913
@@ -232,7 +232,7 @@ I chose this static penalty method because of its ease of use and to prove penal
 #### Results
 
 I could not get results due to the following error:
-```
+```yaml
   File ".\src\binary_knapsack\selection_mechanism\proportional.py", line 49, in _generate_pmf
     assert self.sum_of_fitnesses > 0
            ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -259,7 +259,7 @@ I chose this dynamic penalty method to test the claims that this method leads to
 
 #### Results
 
-```
+```yaml
 Stats over 30 runs:
 Best Overall: (Score: 55.5352304177474 :: [0 1 0 1 1 0 1 1 0 1 1 0 0 0 0 0 0 0 0 0] => costing 39.49372651844115, 50)
 Mean Best Fitness: 52.74168473724467
@@ -282,7 +282,7 @@ $$P(x_i) = f(x_i) / \sum_j^N{f(x_j)}$$
 
 #### Results
 
-```
+```yaml
 Stats over 30 runs:
 Best Overall: (Score: 56.96086516860768 :: [0 0 1 1 1 1 1 1 0 1 0 0 0 0 0 0 0 0 0 0] => costing 39.99900703419182, 32)
 Mean Best Fitness: 53.09012691182008
@@ -304,7 +304,7 @@ is sampled uniformly random with replacement from the top $\tau\%$.
 
 #### Results
 
-```
+```yaml
 Stats over 30 runs:
 Best Overall: (Score: 56.96086516860768 :: [0 0 1 1 1 1 1 1 0 1 0 0 0 0 0 0 0 0 0 0] => costing 39.99900703419182, 39)
 Mean Best Fitness: 51.930860569359396
@@ -323,7 +323,7 @@ Repeat $N$ times.
 
 #### Results
 
-```
+```yaml
 Stats over 30 runs:
 Best Overall: (Score: 55.5352304177474 :: [0 1 0 1 1 0 1 1 0 1 1 0 0 0 0 0 0 0 0 0] => costing 39.49372651844115, 19)
 Mean Best Fitness: 49.19210281339055
@@ -345,7 +345,7 @@ with a typically small random chance.
 
 #### Results
 
-```
+```yaml
 Stats over 30 runs:
 Best Overall: (Score: 56.96086516860768 :: [0 0 1 1 1 1 1 1 0 1 0 0 0 0 0 0 0 0 0 0] => costing 39.99900703419182, 32)
 Mean Best Fitness: 46.870285204235365
@@ -367,7 +367,7 @@ An individual's probability of advancement is proportional to its rank.
 
 #### Results
 
-```
+```yaml
 Stats over 30 runs:
 Best Overall: (Score: 54.89214401149931 :: [0 1 1 1 1 0 0 1 0 1 0 0 0 1 0 0 0 0 0 0] => costing 39.40230129792615, 4)
 Mean Best Fitness: 47.97313785058804
@@ -390,7 +390,7 @@ From two parents, randomly choose a cut-point and swap sides of each parent to c
 
 #### Results
 
-```
+```yaml
 Stats over 30 runs:
 Best Overall: (Score: 55.5352304177474 :: [0 1 0 1 1 0 1 1 0 1 1 0 0 0 0 0 0 0 0 0] => costing 39.49372651844115, 31)
 Mean Best Fitness: 52.81255744849033
@@ -412,7 +412,7 @@ From two parents and for each locus, randomly choose which parent to use at that
 
 #### Results
 
-```
+```yaml
 Stats over 30 runs:
 Best Overall: (Score: 56.96086516860768 :: [0 0 1 1 1 1 1 1 0 1 0 0 0 0 0 0 0 0 0 0] => costing 39.99900703419182, 14)
 Mean Best Fitness: 53.27474215638246
@@ -434,7 +434,7 @@ From multiple parents and for each locus, deterministicly choose the most common
 
 #### Results
 
-```
+```yaml
 Stats over 30 runs:
 Best Overall: (Score: 55.30528934249181 :: [0 0 0 1 1 0 0 1 0 1 1 0 0 1 0 0 0 0 0 0] => costing 39.63564280822889, 7)
 Mean Best Fitness: 50.370564380480324

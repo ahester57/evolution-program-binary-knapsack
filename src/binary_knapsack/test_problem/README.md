@@ -24,7 +24,7 @@ Defaults shown.
 
 ## Example Profits | Weights
 
-```
+```yaml
 Profits         Weights
 [[ 1.41120996  4.66918325]
  [ 0.98976516  1.49829436]
@@ -52,7 +52,7 @@ Profits         Weights
 
 ## Example Default Options
 
-```
+```yaml
 Options: {
   "Crossover_Method": "<class 'binary_knapsack.crossover_method.single_point.SinglePoint'>",
   "Penalty_Method": "<class 'binary_knapsack.penalty_method.logarithmic.LogarithmicPenalty'>",

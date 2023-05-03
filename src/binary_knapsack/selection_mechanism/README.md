@@ -9,7 +9,7 @@ $$P(x_i) = f(x_i) / \sum_j^N{f(x_j)}$$
 
 #### Results
 
-```
+```yaml
 Stats over 30 runs:
 Best Overall: (Score: 56.96086516860768 :: [0 0 1 1 1 1 1 1 0 1 0 0 0 0 0 0 0 0 0 0] => costing 39.99900703419182, 32)
 Mean Best Fitness: 53.09012691182008
@@ -31,7 +31,7 @@ is sampled uniformly random with replacement from the top $\tau\%$.
 
 #### Results
 
-```
+```yaml
 Stats over 30 runs:
 Best Overall: (Score: 56.96086516860768 :: [0 0 1 1 1 1 1 1 0 1 0 0 0 0 0 0 0 0 0 0] => costing 39.99900703419182, 39)
 Mean Best Fitness: 51.930860569359396
@@ -50,7 +50,7 @@ Repeat $N$ times.
 
 #### Results
 
-```
+```yaml
 Stats over 30 runs:
 Best Overall: (Score: 55.5352304177474 :: [0 1 0 1 1 0 1 1 0 1 1 0 0 0 0 0 0 0 0 0] => costing 39.49372651844115, 19)
 Mean Best Fitness: 49.19210281339055
@@ -72,7 +72,7 @@ with a typically small random chance.
 
 #### Results
 
-```
+```yaml
 Stats over 30 runs:
 Best Overall: (Score: 56.96086516860768 :: [0 0 1 1 1 1 1 1 0 1 0 0 0 0 0 0 0 0 0 0] => costing 39.99900703419182, 32)
 Mean Best Fitness: 46.870285204235365
@@ -94,7 +94,7 @@ An individual's probability of advancement is proportional to its rank.
 
 #### Results
 
-```
+```yaml
 Stats over 30 runs:
 Best Overall: (Score: 54.89214401149931 :: [0 1 1 1 1 0 0 1 0 1 0 0 0 1 0 0 0 0 0 0] => costing 39.40230129792615, 4)
 Mean Best Fitness: 47.97313785058804
