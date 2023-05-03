@@ -9,6 +9,8 @@ From two parents, randomly choose a cut-point and swap sides of each parent to c
 
 * Crossover probability, $p_c = 0.65$
 
+----
+
 ### P-Uniform Crossover
 
 From two parents and for each locus, randomly choose which parent to use at that locus. Choose the better parent with probability $p$. This process produces two children per set of parents.
@@ -17,6 +19,8 @@ From two parents and for each locus, randomly choose which parent to use at that
 
 * Crossover probability, $p_c = 0.65$
 * Probability that the higher-performing parent donates their allele, $p = 0.5$
+
+----
 
 ### Majority Voting Crossover
 

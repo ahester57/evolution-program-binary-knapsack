@@ -72,6 +72,8 @@ An individual's probability of advancement equal to fitness score over sum of al
 
 $$P(x_i) = f(x_i) / \sum_j^N{f(x_j)}$$
 
+----
+
 ### Truncation Selection
 
 The top $\tau\%$ are selected for advancement. The next generation
@@ -81,11 +83,15 @@ is sampled uniformly random with replacement from the top $\tau\%$.
 
 * Top tau, $\tau = 0.4$
 
+----
+
 ### Deterministic Tournament Selection
 
 Pick two individuals from the current population uniformly randomly with replacement.  
 Advance the chromosome $\vec{x}$ with the better fitness score.  
 Repeat $N$ times.
+
+----
 
 ### Stochastic Tournament Selection
 
@@ -95,6 +101,8 @@ with a typically small random chance.
 #### Parameters for Stochastic Tournament Selection
 
 * Probability of an upset, $prob = 0.9$
+
+----
 
 ### Linear Ranking Selection
 
@@ -117,6 +125,8 @@ From two parents, randomly choose a cut-point and swap sides of each parent to c
 
 * Crossover probability, $p_c = 0.65$
 
+----
+
 ### P-Uniform Crossover
 
 From two parents and for each locus, randomly choose which parent to use at that locus. Choose the better parent with probability $p$. This process produces two children per set of parents.
@@ -125,6 +135,8 @@ From two parents and for each locus, randomly choose which parent to use at that
 
 * Crossover probability, $p_c = 0.65$
 * Probability that the higher-performing parent donates their allele, $p = 0.5$
+
+----
 
 ### Majority Voting Crossover
 
