@@ -9,11 +9,13 @@ from binary_knapsack.penalty_method.method import PenaltyMethod
 class AbsolutePenalty(PenaltyMethod):
     """Represents an absolute, static penalty. Overage of any constraint leads to zero fitness.
 
+    Penalty(x) = {fitness(x) if infeasibe; 0 otherwise}
+
     Attributes:
         constraints (list): The constraints.
     """
     def __init__(self, constraints:dict) -> None:
-        """Initialize the parameters for death penalty.
+        """Initialize the parameters for absolute penalty.
         
         Args:
             constraints (dict): The constraints. {'attribute_name': limit)
@@ -22,6 +24,8 @@ class AbsolutePenalty(PenaltyMethod):
 
     def penalize(self, population:list[Chromosome]) -> None:
         """Assess and penalize the population using absolute, static penalty.
+
+        Penalty(x) = {fitness(x) if infeasibe; 0 otherwise}
 
         Args:
             population (list of Chromosome): The population to assess.
