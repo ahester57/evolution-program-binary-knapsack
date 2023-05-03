@@ -32,6 +32,7 @@ class BinaryKnapsack(TestProblem):
         """
         super().__init__(dims)
         self.capacity = float(capacity)
+        np.random.seed(int(self.capacity))
         self.weights = np.random.uniform(1, max_item_weight, size=self.dims)
         profit_variances = np.random.uniform(-profit_correlation_factor, profit_correlation_factor, size=self.dims)
         # If profit ends up below 0, set to 0 and consider it actual garbage.
