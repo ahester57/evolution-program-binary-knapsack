@@ -10,6 +10,7 @@ from collections import deque
 
 from binary_knapsack.chromosome import Chromosome
 from binary_knapsack.penalty_method.absolute import AbsolutePenalty
+from binary_knapsack.penalty_method.method import PenaltyMethod
 from binary_knapsack.population import Population
 from binary_knapsack.selection_mechanism.mechanism import SelectionMechanism
 from binary_knapsack.selection_mechanism.proportional import Proportional
@@ -34,6 +35,7 @@ class GA:
         Select_Mechanism (SelectionMechanism): The selected selection mechanism.
         selection_parameters (dict): The selected selection mechanism parameters.
         crossover_instance (CrossoverMethod): The configured instance of the chosen method.
+        penalty_instance (PenaltyMethod): The configured instance of the chosen method.
     """
     def __init__(
         self,
@@ -46,7 +48,9 @@ class GA:
         Select_Mechanism:SelectionMechanism=Proportional,
         selection_parameters:dict={},
         Crossover_Method:CrossoverMethod=SinglePoint,
-        crossover_parameters:dict={'p_c': 0.65}
+        crossover_parameters:dict={'p_c': 0.65},
+        Penalty_Method:PenaltyMethod=AbsolutePenalty,
+        penalty_parameters:dict={},
     ) -> None:
         """Initialize the parameters for a genetic algorithm.
 
@@ -61,6 +65,8 @@ class GA:
             selection_parameters (dict, optional): The selected selection mechanism parameters.
             Crossover_Method (CrossoverMethod): The selected crossover method. Default SinglePoint.
             crossover_parameters (dict, optional): The selected crossover method parameters.
+            Penalty_Method (PenaltyMethod): The selected penalty method. Default AbsolutePenalty.
+            penalty_parameters (dict, optional): The selected penalty method parameters.
         """
         assert pop_size > 0 and pop_size % 2 == 0
         assert p_m >= 0 and p_m <= 1
@@ -85,6 +91,10 @@ class GA:
         self.crossover_instance : CrossoverMethod = Crossover_Method(
             self.random,
             **crossover_parameters
+        )
+        self.penalty_instance : PenaltyMethod = Penalty_Method(
+            self.problem_instance.constraints,
+            **penalty_parameters
         )
 
     async def simulate(self) -> Chromosome:
@@ -117,7 +127,7 @@ class GA:
         """
         try:
             self.population.evaluate(self.problem_instance)
-            AbsolutePenalty(self.problem_instance.constraints).penalize(self.population.members)
+            self.penalty_instance.penalize(self.population.members, self.t)
         except NotImplementedError:
             print('Provided TestProblem not supported.')
             sys.exit(1)

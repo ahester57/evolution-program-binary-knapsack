@@ -14,6 +14,7 @@ class BinaryKnapsack(TestProblem):
         profits (np.ndarray[float]): The profits for each item. Aligned by index.
         profit_correlation_factor (float): Constant used in generation of weakly correlated data sets.
         capacity (float): Capacity of the knapsack.
+        constraints (dict): The constraints.
     """
     def __init__(self,
         dims:int=20,

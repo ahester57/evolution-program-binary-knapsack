@@ -47,7 +47,7 @@ class DynamicPenalty(PenaltyMethod):
 
         Args:
             population (list of Chromosome): The population to assess.
-            t (int): The current generation
+            t (int): The current generation.
         """
         for k, v in self.constraints.items():
             for c in population:

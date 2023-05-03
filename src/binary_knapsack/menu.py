@@ -7,6 +7,9 @@ import random
 import time
 
 from binary_knapsack.ga import GA
+from binary_knapsack.penalty_method.absolute import AbsolutePenalty
+from binary_knapsack.penalty_method.dynamic import DynamicPenalty
+from binary_knapsack.penalty_method.method import PenaltyMethod
 from binary_knapsack.selection_mechanism.mechanism import SelectionMechanism
 from binary_knapsack.selection_mechanism.proportional import Proportional
 from binary_knapsack.selection_mechanism.ranking import LinearRanking
@@ -34,7 +37,7 @@ class GAMenu(object):
         """
         print('''
 =================================
-Problems To Solve
+        Problems To Solve
 =================================
     1 - Binary Knapsack
 =================================
@@ -57,6 +60,39 @@ Problems To Solve
                 problem_parameters.update({k: self.prompt_int(v[0], v[1])})
         return Problem_To_Solve, problem_parameters
 
+    def penalty_method_menu(self) -> PenaltyMethod:
+        """Menu for penalty methods.
+
+        Returns:
+            tuple[PenaltyMethod, dict]: (The chosen penalty method, Its parameters)
+        """
+        print('''
+=================================
+        Penalty Methods
+=================================
+    1 - Absolute
+    2 - Dynamic
+=================================
+''')
+        options = [
+            None,
+            AbsolutePenalty,
+            DynamicPenalty
+        ]
+        ans = -1
+        while ans not in range(1, len(options)):
+            ans = self.prompt_int('Which Penalty Method?', 1)
+        Penalty_Method : PenaltyMethod = options[ans]
+        penalty_parameters = {}
+        for k, v in Penalty_Method.parameters().items():
+            dtype = type(v[1])
+            assert(dtype in (float, int))
+            if dtype is float:
+                penalty_parameters.update({k: self.prompt_float(v[0], v[1])})
+            elif dtype is int:
+                penalty_parameters.update({k: self.prompt_int(v[0], v[1])})
+        return Penalty_Method, penalty_parameters
+
     def selection_mechanism_menu(self) -> SelectionMechanism:
         """Menu for selection mechanisms.
 
@@ -65,7 +101,7 @@ Problems To Solve
         """
         print('''
 =================================
-Selection Mechanisms
+        Selection Mechanisms
 =================================
     1 - Proportional
     2 - Truncation
@@ -84,7 +120,7 @@ Selection Mechanisms
         ]
         ans = -1
         while ans not in range(1, len(options)):
-            ans = self.prompt_int('Which mechanism?', None)
+            ans = self.prompt_int('Which mechanism?', 1)
         Select_Mechanism : SelectionMechanism = options[ans]
         selection_parameters = {}
         for k, v in Select_Mechanism.parameters().items():
@@ -104,7 +140,7 @@ Selection Mechanisms
         """
         print('''
 =================================
-Problems To Solve
+        Crossover Methods
 =================================
     1 - Single Point
     2 - P-Uniform
@@ -217,6 +253,8 @@ Problems To Solve
                 random.seed(time.time())
                 Problem_To_Solve, \
                     problem_parameters = self.problem_to_solve_menu()
+                Penalty_Method, \
+                    penalty_parameters = self.penalty_method_menu()
                 Select_Mechanism, \
                     selection_parameters = self.selection_mechanism_menu()
                 Crossover_Method, \
@@ -230,7 +268,9 @@ Problems To Solve
                     'selection_parameters': selection_parameters,
                     'problem_instance': Problem_To_Solve(**problem_parameters),
                     'Crossover_Method': Crossover_Method,
-                    'crossover_parameters': crossover_parameters
+                    'crossover_parameters': crossover_parameters,
+                    'Penalty_Method': Penalty_Method,
+                    'penalty_parameters': penalty_parameters
                 }
                 if self.prompt_bool('Single run?', True):
                     await GA(

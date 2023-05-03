@@ -18,14 +18,12 @@ class PenaltyMethod:
         assert type(constraints) is dict
         self.constraints = constraints
 
-    def penalize(self, population:list[Chromosome]) -> list[Chromosome]:
+    def penalize(self, population:list[Chromosome], t:int=None) -> None:
         """Assess and penalize the population using a penalty method.
 
         Args:
             population (list of Chromosome): The population to assess.
-
-        Returns:
-            list of Chromosome: A new population after a round of penalization.
+            t (int): The current generation.
         """
         raise NotImplementedError
 
