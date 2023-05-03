@@ -80,4 +80,4 @@ class Chromosome:
         return self.fitness_score is not None
 
     def __repr__(self) -> str:
-        return f'Score: {self.fitness_score} :: {self.bitstring}\n => costing {self.fitness_cost}'
+        return f'Score: {self.fitness_score} :: {self.bitstring} => costing {self.fitness_cost}'

@@ -92,7 +92,6 @@ class GA:
         self.initialize_population()
         self.evaluate_population()
         deque((self.iterate() for _ in np.arange(self.t_max)), maxlen=0) # execute generator
-        print(self.best_of_run)
         return self.best_of_run
 
     def iterate(self) -> None:

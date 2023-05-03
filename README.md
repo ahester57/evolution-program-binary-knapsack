@@ -34,9 +34,7 @@ For each $i=1..n$
 
 $$W_i = rand.float(1, v),$$
 
-$$P_i = W_i + rand.float(-r, r)$$
-
-If $P_i \leq 0$ 
+$$P_i = \max(0, W_i + rand.float(-r, r))$$
 
 ### Test Data Parameters
 
@@ -61,7 +59,6 @@ Defaults shown.
 Defaults shown.
 
 * Population size, $N = 300$
-* Crossover probability, $p_c = 0.65$
 * Mutation probability, $p_m = 0.05$
 * Maximum generations, $t_{max} = 50$
 
@@ -80,7 +77,7 @@ $$P(x_i) = f(x_i) / \sum_j^N{f(x_j)}$$
 The top $\tau\%$ are selected for advancement. The next generation
 is sampled uniformly random with replacement from the top $\tau\%$.
 
-#### Additional Parameters for Truncation Selection
+#### Parameters for Truncation Selection
 
 * Top tau, $\tau = 0.4$
 
@@ -95,16 +92,16 @@ Repeat $N$ times.
 Same as deterministic tournament selection, except the worse chromosome $\vec{x}$ advances
 with a typically small random chance.
 
-#### Additional Parameters for Stochastic Tournament Selection
+#### Parameters for Stochastic Tournament Selection
 
-* Probability, $prob = 0.9$
+* Probability of an upset, $prob = 0.9$
 
 ### Linear Ranking Selection
 
 Each chromosome $\vec{x}$ is ranked from best to worst based on fitness score.  
 An individual's probability of advancement is proportional to its rank.
 
-#### Additional Parameters for Linear Ranking Selection
+#### Parameters for Linear Ranking Selection
 
 * Expected # of copies of best $\vec{x}$, $max = 1.2$
 
@@ -116,21 +113,27 @@ An individual's probability of advancement is proportional to its rank.
 
 From two parents, randomly choose a cut-point and swap sides of each parent to create two children.
 
+#### Parameters for Single-Point Crossover
+
+* Crossover probability, $p_c = 0.65$
+
 ### P-Uniform Crossover
 
 From two parents and for each locus, randomly choose which parent to use at that locus. Choose the better parent with probability $p$. This process produces two children per set of parents.
 
-#### Additional Parameters for P-Uniform Crossover
+#### Parameters for P-Uniform Crossover
 
+* Crossover probability, $p_c = 0.65$
 * Probability that the higher-performing parent donates their allele, $p = 0.5$
 
 ### Majority Voting Crossover
 
 From multiple parents and for each locus, deterministicly choose the most common allele for that locus.
 
-#### Additional Parameters for Majority Voting Crossover
+#### Parameters for Majority Voting Crossover
 
-* Probability that the higher-performing parent donates their allele, $p = 0.5$
+* Crossover probability, $p_c = 0.65$
+* The number of parents to produce one child, $num\_parents = 4$
 
 ----
 

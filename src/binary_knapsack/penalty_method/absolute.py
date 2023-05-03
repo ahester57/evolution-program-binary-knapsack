@@ -7,7 +7,7 @@ from binary_knapsack.penalty_method.method import PenaltyMethod
 
 
 class AbsolutePenalty(PenaltyMethod):
-    """Represents an absolute penalty. Overage of any constraint leads to zero fitness.
+    """Represents an absolute, static penalty. Overage of any constraint leads to zero fitness.
 
     Attributes:
         constraints (list): The constraints.
@@ -21,7 +21,7 @@ class AbsolutePenalty(PenaltyMethod):
         super().__init__(constraints)
 
     def penalize(self, population:list[Chromosome]) -> None:
-        """Assess and penalize the population using a penalty method.
+        """Assess and penalize the population using absolute, static penalty.
 
         Args:
             population (list of Chromosome): The population to assess.

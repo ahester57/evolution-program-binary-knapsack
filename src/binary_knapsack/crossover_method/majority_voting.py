@@ -47,7 +47,7 @@ class MajorityVoting(CrossoverMethod):
             parent_indices = self.random.integers(0, pop_size, size=self.num_parents)
             parent_bitstrings = [population[pi].bitstring for pi in parent_indices]
             if randomness[i] < self.p_c:
-                # crossover, perform p-uniform crossover
+                # crossover, perform majority voting crossover
                 child = Chromosome(None, len(parent_bitstrings[0]))
                 child_bitstring = child.bitstring
                 for j in range(child.num_items):
