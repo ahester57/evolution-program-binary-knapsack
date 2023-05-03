@@ -49,8 +49,8 @@ class BinaryKnapsack(TestProblem):
             tuple[float]: The (profit, weight) for the given solution to the problem.
         """
         assert len(soln) == self.dims
-        profit = 0
-        weight = 0
+        profit = np.float64(0)
+        weight = np.float64(0)
         for i, x in enumerate(soln):
             if x == 1:
                 profit += self.profits[i]
