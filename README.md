@@ -465,3 +465,15 @@ Simulate until one of the following has been met:
 ## Local Installation
 
 From the project root, run `pip install -e src/`.
+
+----
+
+See [repository ](https://github.com/ahester57/evolution-program-binary-knapsack) for full code.
+
+----
+
+## Certification
+
+I certify that this report is my own, independent work and that it does not plagiarize, in part or in full, any other work.
+
+- Austin Hester
